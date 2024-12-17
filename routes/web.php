@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -14,14 +15,44 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
+// Route Dashboard berdasarkan Role
 Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', function () {
+        $userRole = auth()->user()->role->name;
+
+        if ($userRole === 'admin') {
+            return redirect()->route('admin.dashboard');
+        } elseif ($userRole === 'cosrent') {
+            return redirect()->route('cosrent.dashboard');
+        } elseif ($userRole === 'user') {
+            return redirect()->route('user.dashboard');
+        }
+
+        abort(403); // Jika role tidak dikenali
+    })->name('dashboard');
+
+
+
+    // Routes untuk admin
+    Route::prefix('admin')->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'indexAdmin'])->name('admin.dashboard');
+    });
+
+    // Routes untuk cosrent
+    Route::prefix('cosrent')->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'indexCosrent'])->name('cosrent.dashboard');
+    });
+
+
+    // Routes untuk user
+    Route::prefix('user')->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'indexUser'])->name('user.dashboard');
+    });
+
+    // Routes untuk Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
