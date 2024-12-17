@@ -15,7 +15,9 @@ class DashboardController extends Controller
             abort(403, 'Unauthorized access');
         }
 
-        return Inertia::render('Admin/Dashboard');
+        return Inertia::render('Admin/Dashboard', [
+            'username' => auth()->user()->name, // Mengirim nama pengguna ke frontend
+        ]);
     }
 
     // Cosrent Dashboard
@@ -26,7 +28,9 @@ class DashboardController extends Controller
             abort(403, 'Unauthorized access');
         }
 
-        return Inertia::render('Cosrent/Dashboard');
+        return Inertia::render('Cosrent/Dashboard', [
+            'username' => auth()->user()->name, // Mengirim nama pengguna ke frontend
+        ]);
     }
 
     // User Dashboard
@@ -37,6 +41,8 @@ class DashboardController extends Controller
             abort(403, 'Unauthorized access');
         }
 
-        return Inertia::render('User/Dashboard');
+        return Inertia::render('User/Dashboard', [
+            'username' => auth()->user()->name, // Pastikan data dikirim
+        ]);
     }
 }
