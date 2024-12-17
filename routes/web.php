@@ -28,28 +28,28 @@ Route::middleware('auth')->group(function () {
             return redirect()->route('user.dashboard');
         }
 
-        abort(403); // Jika role tidak dikenali
+        abort(403);
     })->name('dashboard');
 
 
 
-    // Routes untuk admin
+    // Routes admin
     Route::prefix('admin')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'indexAdmin'])->name('admin.dashboard');
     });
 
-    // Routes untuk cosrent
+    // Routes cosrent
     Route::prefix('cosrent')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'indexCosrent'])->name('cosrent.dashboard');
     });
 
 
-    // Routes untuk user
+    // Routes user
     Route::prefix('user')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'indexUser'])->name('user.dashboard');
     });
 
-    // Routes untuk Profile
+    // Routes Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

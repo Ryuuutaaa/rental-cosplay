@@ -16,7 +16,7 @@ class DashboardController extends Controller
         }
 
         return Inertia::render('Admin/Dashboard', [
-            'username' => auth()->user()->name, // Mengirim nama pengguna ke frontend
+            'username' => auth()->user()->name,
         ]);
     }
 
@@ -29,7 +29,7 @@ class DashboardController extends Controller
         }
 
         return Inertia::render('Cosrent/Dashboard', [
-            'username' => auth()->user()->name, // Mengirim nama pengguna ke frontend
+            'username' => auth()->user()->name,
         ]);
     }
 
@@ -42,7 +42,7 @@ class DashboardController extends Controller
         }
 
         return Inertia::render('User/Dashboard', [
-            'username' => auth()->user()->name, // Pastikan data dikirim
+            'username' => auth()->user()->name,
         ]);
     }
 }

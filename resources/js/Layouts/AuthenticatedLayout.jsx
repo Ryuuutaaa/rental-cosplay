@@ -6,7 +6,9 @@ import { Link, usePage } from "@inertiajs/react";
 import { useState } from "react";
 
 export default function AuthenticatedLayout({ header, children }) {
-    const user = usePage().props.auth.user;
+    const { auth } = usePage().props;
+    const user = auth.user;
+    const userRole = user.role.name;
 
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
@@ -30,6 +32,69 @@ export default function AuthenticatedLayout({ header, children }) {
                                 >
                                     Dashboard
                                 </NavLink>
+
+                                {userRole === "admin" && (
+                                    <>
+                                        <NavLink
+                                            href="/admin/categories"
+                                            active={route().current(
+                                                "admin.categories"
+                                            )}
+                                        >
+                                            Manajemen Kategori
+                                        </NavLink>
+                                        <NavLink
+                                            href="/admin/cosrents"
+                                            active={route().current(
+                                                "admin.cosrents"
+                                            )}
+                                        >
+                                            Manajemen Cosrent
+                                        </NavLink>
+                                        <NavLink
+                                            href="/admin/users"
+                                            active={route().current(
+                                                "admin.users"
+                                            )}
+                                        >
+                                            Manajemen User
+                                        </NavLink>
+                                    </>
+                                )}
+
+                                {userRole === "cosrent" && (
+                                    <>
+                                        <NavLink
+                                            href="/cosrent/customs"
+                                            active={route().current(
+                                                "cosrent.customs"
+                                            )}
+                                        >
+                                            Manajemen Costum
+                                        </NavLink>
+                                        <NavLink
+                                            href="/cosrent/customs"
+                                            active={route().current(
+                                                "cosrent.customs"
+                                            )}
+                                        >
+                                            Order List
+                                        </NavLink>
+                                    </>
+                                )}
+
+                                {userRole === "user" && (
+                                    <>
+                                        <NavLink
+                                            href="/user/history-orders"
+                                            active={route().current(
+                                                "user.history-orders"
+                                            )}
+                                        >
+                                            History Order
+                                        </NavLink>
+                                    </>
+                                )}
                             </div>
                         </div>
 
@@ -52,7 +117,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                                 >
                                                     <path
                                                         fillRule="evenodd"
-                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 1 011.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
                                                         clipRule="evenodd"
                                                     />
                                                 </svg>
@@ -117,46 +182,6 @@ export default function AuthenticatedLayout({ header, children }) {
                                     />
                                 </svg>
                             </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div
-                    className={
-                        (showingNavigationDropdown ? "block" : "hidden") +
-                        " sm:hidden"
-                    }
-                >
-                    <div className="space-y-1 pb-3 pt-2">
-                        <ResponsiveNavLink
-                            href={route("dashboard")}
-                            active={route().current("dashboard")}
-                        >
-                            Dashboard
-                        </ResponsiveNavLink>
-                    </div>
-
-                    <div className="border-t border-gray-200 pb-1 pt-4 dark:border-gray-600">
-                        <div className="px-4">
-                            <div className="text-base font-medium text-gray-800 dark:text-gray-200">
-                                {user.name}
-                            </div>
-                            <div className="text-sm font-medium text-gray-500">
-                                {user.email}
-                            </div>
-                        </div>
-
-                        <div className="mt-3 space-y-1">
-                            <ResponsiveNavLink href={route("profile.edit")}>
-                                Profile
-                            </ResponsiveNavLink>
-                            <ResponsiveNavLink
-                                method="post"
-                                href={route("logout")}
-                                as="button"
-                            >
-                                Log Out
-                            </ResponsiveNavLink>
                         </div>
                     </div>
                 </div>
