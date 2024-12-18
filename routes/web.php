@@ -1,7 +1,12 @@
 <?php
 
+use App\Http\Controllers\CategoriController;
+use App\Http\Controllers\CosrentController;
+use App\Http\Controllers\CostumController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\OrderListController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -35,12 +40,31 @@ Route::middleware('auth')->group(function () {
 
     // Routes admin
     Route::prefix('admin')->group(function () {
+
+        // dashboard
         Route::get('/dashboard', [DashboardController::class, 'indexAdmin'])->name('admin.dashboard');
+
+        // categori
+        Route::get('/categori', [CategoriController::class, 'index'])->name('admin.categori');
+
+        // cosrent
+        Route::get("/cosrent", [CosrentController::class, 'index'])->name("admin.cosrent");
+
+        // user
+        Route::get("/user", [UserController::class, 'index'])->name("admin.user");
     });
 
     // Routes cosrent
     Route::prefix('cosrent')->group(function () {
+
+        // dashboard
         Route::get('/dashboard', [DashboardController::class, 'indexCosrent'])->name('cosrent.dashboard');
+
+        // costum
+        Route::get("/costum", [CostumController::class, 'index'])->name("cosrent.costum");
+
+        // order
+        Route::get("/order", [OrderListController::class, 'index'])->name("cosrent.order");
     });
 
 

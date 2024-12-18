@@ -18,6 +18,11 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
+        $userRole = auth()->user()->role->name ?? null;
+        if ($userRole === 'admin|cosrent|user') {
+            abort(403, 'Unauthorized access');
+        }
+
         return Inertia::render('Profile/Edit', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
