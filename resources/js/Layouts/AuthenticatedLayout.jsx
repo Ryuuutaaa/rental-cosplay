@@ -91,9 +91,9 @@ export default function AuthenticatedLayout({ header, children }) {
                                 {userRole === "user" && (
                                     <>
                                         <NavLink
-                                            href="/user/history-orders"
+                                            href={route("user.history")}
                                             active={route().current(
-                                                "user.history-orders"
+                                                "user.history"
                                             )}
                                         >
                                             History Order
