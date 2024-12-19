@@ -28,7 +28,12 @@ export default function AuthenticatedLayout({ header, children }) {
                             <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink
                                     href={route("dashboard")}
-                                    active={route().current("dashboard")}
+                                    active={
+                                        route().current("dashboard") ||
+                                        route().current("admin.dashboard") ||
+                                        route().current("cosrent.dashboard") ||
+                                        route().current("user.dashboard")
+                                    }
                                 >
                                     Dashboard
                                 </NavLink>
@@ -36,25 +41,25 @@ export default function AuthenticatedLayout({ header, children }) {
                                 {userRole === "admin" && (
                                     <>
                                         <NavLink
-                                            href="/admin/categories"
+                                            href={route("admin.categori")}
                                             active={route().current(
-                                                "admin.categories"
+                                                "admin.categori"
                                             )}
                                         >
                                             Manajemen Kategori
                                         </NavLink>
                                         <NavLink
-                                            href="/admin/cosrents"
+                                            href={route("admin.cosrent")}
                                             active={route().current(
-                                                "admin.cosrents"
+                                                "admin.cosrent"
                                             )}
                                         >
                                             Manajemen Cosrent
                                         </NavLink>
                                         <NavLink
-                                            href="/admin/users"
+                                            href={route("admin.user")}
                                             active={route().current(
-                                                "admin.users"
+                                                "admin.user"
                                             )}
                                         >
                                             Manajemen User
@@ -65,17 +70,17 @@ export default function AuthenticatedLayout({ header, children }) {
                                 {userRole === "cosrent" && (
                                     <>
                                         <NavLink
-                                            href="/cosrent/customs"
+                                            href={route("cosrent.costum")}
                                             active={route().current(
-                                                "cosrent.customs"
+                                                "cosrent.costum"
                                             )}
                                         >
                                             Manajemen Costum
                                         </NavLink>
                                         <NavLink
-                                            href="/cosrent/customs"
+                                            href={route("cosrent.order")}
                                             active={route().current(
-                                                "cosrent.customs"
+                                                "cosrent.order"
                                             )}
                                         >
                                             Order List
@@ -86,9 +91,9 @@ export default function AuthenticatedLayout({ header, children }) {
                                 {userRole === "user" && (
                                     <>
                                         <NavLink
-                                            href="/user/history-orders"
+                                            href={route("user.history")}
                                             active={route().current(
-                                                "user.history-orders"
+                                                "user.history"
                                             )}
                                         >
                                             History Order
