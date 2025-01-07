@@ -25,7 +25,11 @@ class CategoriController extends Controller
      */
     public function create()
     {
-        //
+        $userRole = auth()->user()->role->name ?? null;
+        if ($userRole !== 'admin') {
+            abort(403, 'Unauthorized access');
+        }
+        return Inertia::render("Admin/Category/Create");
     }
 
     /**

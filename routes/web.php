@@ -47,6 +47,7 @@ Route::middleware('auth')->group(function () {
 
         // categori
         Route::get('/categori', [CategoriController::class, 'index'])->name('admin.categori');
+        Route::get("/categori/create", [CategoriController::class, 'create'])->name("admin.categori.create");
 
         // cosrent
         Route::get("/cosrent", [CosrentController::class, 'index'])->name("admin.cosrent");
