@@ -5,18 +5,20 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-class CategoriController extends Controller
+class CategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function __construct()
     {
         $userRole = auth()->user()->role->name ?? null;
         if ($userRole !== 'admin') {
             abort(403, 'Unauthorized access');
         }
-
+    }
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
         return Inertia::render('Admin/Category/App');
     }
 
@@ -25,11 +27,15 @@ class CategoriController extends Controller
      */
     public function create()
     {
+<<<<<<< HEAD:app/Http/Controllers/CategoriController.php
         $userRole = auth()->user()->role->name ?? null;
         if ($userRole !== 'admin') {
             abort(403, 'Unauthorized access');
         }
         return Inertia::render("Admin/Category/Create");
+=======
+        return Inertia::render('Admin/Category/Create');
+>>>>>>> a5090db2772c6db9b916dd92e85999cfadd7df5e:app/Http/Controllers/CategoryController.php
     }
 
     /**
@@ -37,7 +43,12 @@ class CategoriController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string',
+        ], [
+            'name.required' => '',
+            'name.string' => ''
+        ]);
     }
 
     /**
