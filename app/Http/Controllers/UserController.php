@@ -17,7 +17,7 @@ class UserController extends Controller
             abort(403, 'Unauthorized access');
         }
 
-        return Inertia::render("Admin/User");
+        return Inertia::render("Admin/User/App");
     }
 
     /**
