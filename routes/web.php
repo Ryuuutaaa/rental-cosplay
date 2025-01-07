@@ -46,12 +46,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'indexAdmin'])->name('admin.dashboard');
 
         // categori
-<<<<<<< HEAD
-        Route::get('/categori', [CategoriController::class, 'index'])->name('admin.categori');
-        Route::get("/categori/create", [CategoriController::class, 'create'])->name("admin.categori.create");
-=======
+        Route::get("/categori/create", [CategoryController::class, 'create'])->name("admin.categori.create");
         Route::get('/categori', [CategoryController::class, 'index'])->name('admin.categori');
->>>>>>> a5090db2772c6db9b916dd92e85999cfadd7df5e
 
         // cosrent
         Route::get("/cosrent", [CosrentController::class, 'index'])->name("admin.cosrent");
