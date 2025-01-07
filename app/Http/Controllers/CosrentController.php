@@ -16,7 +16,7 @@ class CosrentController extends Controller
         if ($userRole !== 'admin') {
             abort(403, 'Unauthorized access');
         }
-        return Inertia::render("Admin/Cosrent");
+        return Inertia::render("Admin/Cosrent/App");
     }
 
     /**

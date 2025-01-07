@@ -17,7 +17,7 @@ class CategoriController extends Controller
             abort(403, 'Unauthorized access');
         }
 
-        return Inertia::render('Admin/Categori');
+        return Inertia::render('Admin/Category/App');
     }
 
     /**
