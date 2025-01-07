@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\CategoriController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CosrentController;
 use App\Http\Controllers\CostumController;
 use App\Http\Controllers\DashboardController;
@@ -46,7 +46,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'indexAdmin'])->name('admin.dashboard');
 
         // categori
-        Route::get('/categori', [CategoriController::class, 'index'])->name('admin.categori');
+        Route::get('/categori', [CategoryController::class, 'index'])->name('admin.categori');
 
         // cosrent
         Route::get("/cosrent", [CosrentController::class, 'index'])->name("admin.cosrent");
