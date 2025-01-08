@@ -1,27 +1,27 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, useForm, usePage } from "@inertiajs/react";
 
-export default function Create() {
-    const { flash = {}, errors: pageErrors = {} } = usePage().props;
+export default function Edit({ datas }) {
+    const { flash = {} } = usePage().props;
 
-    const { data, setData, post, processing, errors, reset } = useForm({
-        name: "",
+    const { data, setData, put, processing, errors } = useForm({
+        name: datas.name || "",
     });
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        post(route("admin.category.store"));
+        put(route("admin.category.update", datas.id));
     };
 
     return (
         <AuthenticatedLayout
             header={
                 <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                    Create Category
+                    Edit Category
                 </h2>
             }
         >
-            <Head title="Create Category" />
+            <Head title="Edit Category" />
 
             <div className="max-w-4xl mx-auto mt-10 bg-white shadow-lg rounded-lg p-6 dark:bg-gray-800">
                 {/* Flash Message */}
@@ -65,8 +65,9 @@ export default function Create() {
                         <button
                             type="submit"
                             className="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-offset-gray-800"
+                            disabled={processing}
                         >
-                            Save
+                            {processing ? "Saving..." : "Save"}
                         </button>
                     </div>
                 </form>
