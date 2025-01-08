@@ -13,6 +13,13 @@ return new class extends Migration
     {
         Schema::create('order', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('cosrent_id')
+                ->nullable()
+                ->index()
+                ->references('id')
+                ->on('cosrent')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
             $table->foreignId('costum_id')
                 ->nullable()
                 ->index()
@@ -24,7 +31,7 @@ return new class extends Migration
                 ->nullable()
                 ->index()
                 ->references('id')
-                ->on('costum')
+                ->on('users')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->timestamps();
