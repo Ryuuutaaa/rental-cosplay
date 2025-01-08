@@ -41,9 +41,9 @@ export default function AuthenticatedLayout({ header, children }) {
                                 {userRole === "admin" && (
                                     <>
                                         <NavLink
-                                            href={route("admin.categori")}
+                                            href={route("admin.category")}
                                             active={route().current(
-                                                "admin.categori"
+                                                "admin.category"
                                             )}
                                         >
                                             Manajemen Kategori
