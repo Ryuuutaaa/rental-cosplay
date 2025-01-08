@@ -46,8 +46,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'indexAdmin'])->name('admin.dashboard');
 
         // categori
-        Route::get("/categori/create", [CategoryController::class, 'create'])->name("admin.categori.create");
-        Route::get('/categori', [CategoryController::class, 'index'])->name('admin.categori');
+        Route::get("/category", [CategoryController::class, 'index'])->name('admin.category');
+        Route::get("/category/create", [CategoryController::class, 'create'])->name("admin.category.create");
+        Route::post("/category", [CategoryController::class, "store"])->name("admin.category.store");
+        Route::get("/category/{id}/edit", [CategoryController::class, "edit"])->name("admin.category.edit");
+        Route::put("/category/{id}", [CategoryController::class, "update"])->name("admin.category.update");
+        Route::delete("/category/{id}", [CategoryController::class, "destroy"])->name("admin.category.destroy");
 
         // cosrent
         Route::get("/cosrent", [CosrentController::class, 'index'])->name("admin.cosrent");

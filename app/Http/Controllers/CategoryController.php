@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Exception;
 use Inertia\Inertia;
+use App\Models\Category;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Validation\ValidationException;
 
 class CategoryController extends Controller
 {
@@ -19,7 +23,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Admin/Category/App');
+        $categories = Category::all();
+        return Inertia::render('Admin/Category/App', ['datas' => $categories]);
     }
 
     /**
@@ -35,12 +40,30 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string',
-        ], [
-            'name.required' => '',
-            'name.string' => ''
-        ]);
+        try {
+            $request->validate([
+                'name' => 'required|string',
+            ], [
+                'name.required' => 'Nama kategori harus diisi',
+                'name.string' => 'Nama kategori harus berupa string'
+            ]);
+
+            Category::create([
+                'name' => $request->name
+            ]);
+
+            return redirect()
+                ->route('admin.category')
+                ->with('success', 'Data Kategori berhasil ditambahkan!');
+        } catch (ValidationException $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Terjadi kesalahan Validasi saat menambah kategori: ' . $e->getMessage());
+        } catch (Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Terjadi kesalahan Server saat menambah kategori: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -56,7 +79,8 @@ class CategoryController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $categories = Category::find($id);
+        return Inertia::render('Admin/Category/Edit', ['datas' => $categories]);
     }
 
     /**
@@ -64,7 +88,30 @@ class CategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try {
+            $request->validate([
+                'name' => 'required|string',
+            ], [
+                'name.required' => 'Nama kategori harus diisi',
+                'name.string' => 'Nama kategori harus berupa string'
+            ]);
+
+            $category = Category::find($id);
+            $category->name = $request->name;
+            $category->save();
+
+            return redirect()
+                ->route('admin.category')
+                ->with('success', 'Data Kategori berhasil diubah!');
+        } catch (ValidationException $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Terjadi kesalahan Validasi saat mengubah kategori: ' . $e->getMessage());
+        } catch (Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Terjadi kesalahan Server saat mengubah kategori: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -72,6 +119,17 @@ class CategoryController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            $category = Category::find($id);
+            $category->delete();
+
+            return redirect()
+                ->route('admin.category')
+                ->with('success', 'Data Kategori berhasil dihapus!');
+        } catch (Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Terjadi kesalahan Server saat menghapus kategori: ' . $e->getMessage());
+        }
     }
 }
