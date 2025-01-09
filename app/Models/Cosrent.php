@@ -11,7 +11,8 @@ class Cosrent extends Model
     protected $fillable = [
         "cosrent_name",
         "telp_number",
-        "adress",
+        "address",
+        "user_id",
     ];
 
     protected $guarded = [
@@ -22,5 +23,10 @@ class Cosrent extends Model
     public function costum()
     {
         return $this->hasMany(Costum::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

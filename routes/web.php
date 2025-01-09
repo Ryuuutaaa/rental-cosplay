@@ -55,9 +55,24 @@ Route::middleware('auth')->group(function () {
 
         // cosrent
         Route::get("/cosrent", [CosrentController::class, 'index'])->name("admin.cosrent");
+        Route::get("/cosrent/create", [CosrentController::class, 'create'])->name("admin.cosrent.create");
+        Route::post("/cosrent", [CosrentController::class, "store"])->name("admin.cosrent.store");
+        Route::get("/cosrent/{id}/edit", [CosrentController::class, "edit"])->name("admin.cosrent.edit");
+        Route::put("/cosrent/{id}", [CosrentController::class, "update"])->name("admin.cosrent.update");
+        Route::delete("/cosrent/{id}", [CosrentController::class, "destroy"])->name("admin.cosrent.destroy");
+
 
         // user
         Route::get("/user", [UserController::class, 'index'])->name("admin.user");
+        Route::get("/user/create", [UserController::class, 'create'])->name("admin.user.create");
+        Route::post("/user", [UserController::class, "store"])->name("admin.user.store");
+        Route::get("/user/{id}/edit", [UserController::class, "edit"])->name("admin.user.edit");
+        Route::put("/user/{id}", [UserController::class, "update"])->name("admin.user.update");
+        Route::delete("/user/{id}", [UserController::class, "destroy"])->name("admin.user.destroy");
+
+        //tambahan user yang request menjadi cosrent
+        Route::get("/user/request", [UserController::class, "getrequest"])->name("admin.cosrent.getrequest");
+        Route::put("/user/{id}/handlerequest", [UserController::class, "handlerequest"])->name("admin.user.handlerequest");
     });
 
     // Routes cosrent
@@ -88,6 +103,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    //tambahan user yang request menjadi cosrent
+    Route::post("/user/request", [UserController::class, "request"])->name("user.request");
 });
 
 require __DIR__ . '/auth.php';

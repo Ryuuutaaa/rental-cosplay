@@ -15,7 +15,13 @@ return new class extends Migration
             $table->id();
             $table->string('cosrent_name');
             $table->string('telp_number')->nullable();
-            $table->string('adress')->nullable();
+            $table->string('address')->nullable();
+            $table->foreignId('user_id')
+                ->nullable()
+                ->references('id')
+                ->on('users')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
             $table->timestamps();
         });
     }
