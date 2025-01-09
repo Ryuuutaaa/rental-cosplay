@@ -1,7 +1,7 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
 
-export default function Dashboard({ username }) {
+export default function Dashboard({ username, categories, cosrents, penyewa }) {
     return (
         <AuthenticatedLayout
             header={
@@ -20,7 +20,7 @@ export default function Dashboard({ username }) {
                                 Jumlah Category
                             </h5>
                             <span className=" text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                                5
+                                {categories}
                             </span>
                         </div>
                         <div className="ml-10">
@@ -47,7 +47,7 @@ export default function Dashboard({ username }) {
                                 Jumlah Cosrent
                             </h5>
                             <span className=" text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                                90
+                                {cosrents}
                             </span>
                         </div>
                         <div className="ml-10">
@@ -75,7 +75,7 @@ export default function Dashboard({ username }) {
                                 Jumlah Penyewa
                             </h5>
                             <span className=" text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                                190
+                                {penyewa}
                             </span>
                         </div>
                         <div className="ml-10">

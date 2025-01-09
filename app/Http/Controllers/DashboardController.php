@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\User;
 use Inertia\Inertia;
+use App\Models\Cosrent;
+use App\Models\Category;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class DashboardController extends Controller
 {
@@ -15,8 +19,15 @@ class DashboardController extends Controller
             abort(403, 'Unauthorized access');
         }
 
+        $categories = Category::all()->count();
+        $cosrents = Cosrent::all()->count();
+        $penyewa = User::where('role_id', "=", "3")->count();
+
         return Inertia::render('Admin/Dashboard', [
             'username' => auth()->user()->name,
+            'categories' => $categories,
+            'cosrents' => $cosrents,
+            'penyewa' => $penyewa,
         ]);
     }
 
