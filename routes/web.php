@@ -71,8 +71,9 @@ Route::middleware('auth')->group(function () {
         Route::delete("/user/{id}", [UserController::class, "destroy"])->name("admin.user.destroy");
 
         //tambahan user yang request menjadi cosrent
-        Route::get("/user/request", [UserController::class, "getrequest"])->name("admin.cosrent.getrequest");
-        Route::put("/user/{id}/handlerequest", [UserController::class, "handlerequest"])->name("admin.user.handlerequest");
+        Route::get("/user/getrequest", [UserController::class, "getrequest"])->name("admin.cosrent.getrequest");
+        Route::post("/user/{id}/approve", [UserController::class, "approve"])->name("admin.user.approve");
+        Route::post("/user/{id}/reject", [UserController::class, "reject"])->name("admin.user.reject");
     });
 
     // Routes cosrent

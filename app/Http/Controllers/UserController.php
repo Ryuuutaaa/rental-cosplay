@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Role;
 use App\Models\User;
 use Inertia\Inertia;
+use App\Models\Cosrent;
 use Illuminate\Http\Request;
 use App\Models\RequestCosrent;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 
 class UserController extends Controller
 {
@@ -73,12 +75,16 @@ class UserController extends Controller
 
     public function getrequest()
     {
-        // $user_request_cosrent = DB::table("request")->select('request.*', 'users.name')->join('users', 'request.user_id', '=', 'users.id')->get();
-        $user_request_cosrent = RequestCosrent::with('user:id,name')->get();
-        return Inertia::render("Admin/Cosrent/Request", ["datas" => $user_request_cosrent]);
+        $user_request_cosrent = DB::table("request")->select('request.*', 'users.name', 'users.email', 'users.id as user_id')->join('users', 'request.user_id', '=', 'users.id')->get();
+        // $user_request_cosrent = RequestCosrent::with('user:id,name,email')->get();
+        $auth = auth()->user();
+        return Inertia::render("Admin/Cosrent/Request", [
+            "datas" => $user_request_cosrent,
+            "auth" => $auth
+        ]);
     }
 
-    public function handlerequest(Request $request, string $id)
+    public function approve(Request $request, string $id)
     {
         $request->validate([
             "user_id" => "required",
@@ -105,21 +111,53 @@ class UserController extends Controller
                 ]);
 
                 if ($request->status === "approved") {
-                    $user->update([
+                    $update_role = $user->update([
                         "role_id" => $role_id
                     ]);
+
+                    if ($update_role) {
+                        Cosrent::create([
+                            "user_id" => $user->id,
+                            "cosrent_name" => $user->name,
+                        ]);
+                    }
                 }
 
                 DB::commit();
 
-                return redirect()->route('user.dashboard')->with('success', 'Request berhasil diproses!');
+                return redirect()->route('admin.cosrent.getrequest')->with('success', 'Request berhasil diproses!');
             }
 
             DB::rollBack();
-            return redirect()->route('user.dashboard')->with('error', 'User role tidak valid untuk permintaan ini.');
+            return redirect()->route('admin.cosrent.getrequest')->with('error', 'User role tidak valid untuk permintaan ini.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('user.dashboard')->with('error', 'Terjadi kesalahan Server.');
+            return redirect()->route('admin.cosrent.getrequest')->with('error', 'Terjadi kesalahan Server.');
+        }
+    }
+
+    public function reject(Request $request, string $id)
+    {
+        $request->validate([
+            "status" => "required",
+        ], [
+            "status.required" => "Status harus dikirim dengan benar!",
+        ]);
+
+        $request_cosrent = RequestCosrent::find($id);
+
+        if (!$request_cosrent) {
+            return redirect()->back()->with('error', 'Data tidak ditemukan!');
+        }
+
+        try {
+            $request_cosrent->update([
+                "status" => $request->status
+            ]);
+
+            return redirect()->route('admin.cosrent.getrequest')->with('success', 'Request berhasil diproses!');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.cosrent.getrequest')->with('error', 'Terjadi kesalahan Server.');
         }
     }
 
