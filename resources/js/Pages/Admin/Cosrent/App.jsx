@@ -101,6 +101,13 @@ export default function Cosrent({ datas = [] }) {
                             </tr>
                         </thead>
                         <tbody>
+                            {datas.length === 0 && (
+                                <tr>
+                                    <td colSpan="4" className="px-6 py-4">
+                                        No data found.
+                                    </td>
+                                </tr>
+                            )}
                             {datas.map((data) => (
                                 <tr
                                     key={data.id}
