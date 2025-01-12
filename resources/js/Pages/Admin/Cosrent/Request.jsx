@@ -34,8 +34,6 @@ export default function Cosrent({ datas = [], auth }) {
         );
     };
 
-    console.log(datas);
-
     const handleReject = (id, user_id, status) => {
         if (!window.confirm("Are you sure you want to reject this request?")) {
             return;

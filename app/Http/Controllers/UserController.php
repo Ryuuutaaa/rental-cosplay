@@ -6,6 +6,7 @@ use App\Models\Role;
 use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Cosrent;
+use App\Enums\UserStatus;
 use Illuminate\Http\Request;
 use App\Models\RequestCosrent;
 use Illuminate\Support\Facades\DB;
@@ -13,69 +14,89 @@ use App\Http\Controllers\Controller;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function admincheck()
     {
         $userRole = auth()->user()->role->name ?? null;
         if ($userRole !== 'admin') {
             abort(403, 'Unauthorized access');
         }
-        return Inertia::render("Admin/User/App");
     }
-
     /**
-     * Show the form for creating a new resource.
+     * Display a listing of the resource.
      */
-    public function create()
+    public function index()
     {
-        //
+        $this->admincheck();
+
+        $users = User::where('role_id', '!=', Role::where('name', 'admin')->first()->id)
+            ->where('status', UserStatus::Active->value)
+            ->get();
+
+        return Inertia::render("Admin/User/App", [
+            "datas" => $users
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function bannedlist()
     {
-        //
+        $this->admincheck();
+
+        $users = User::where('role_id', '!=', Role::where('name', 'admin')->first()->id)
+            ->where('status', UserStatus::Banned->value)
+            ->get();
+
+        return Inertia::render("Admin/User/BannedList", [
+            "datas" => $users
+        ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function detail(string $id)
     {
-        //
+        $this->admincheck();
+        $user = User::find($id);
+        if ($user === null) {
+            abort(404, 'User not found');
+        }
+
+        return Inertia::render("Admin/User/Detail", [
+            "datas" => $user
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function ban(string $id)
     {
-        //
+        $this->admincheck();
+        $user = User::find($id);
+        if ($user === null) {
+            abort(404, 'User not found');
+        }
+
+        $user->status = UserStatus::Banned->value;
+        $user->save();
+        return redirect()->route('admin.user.bannedlist')->with('success', 'User berhasil dibanned!');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function unban(string $id)
     {
-        //
+        $this->admincheck();
+        $user = User::find($id);
+        if ($user === null) {
+            abort(404, 'User not found');
+        }
+        $user->status = UserStatus::Active->value;
+        $user->save();
+        return redirect()->route('admin.user.bannedlist')->with('success', 'User berhasil dipulihkan!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
 
+    //tambahan untuk request menjadi cosrent
     public function getrequest()
     {
-        $user_request_cosrent = DB::table("request")->select('request.*', 'users.name', 'users.email', 'users.id as user_id')->join('users', 'request.user_id', '=', 'users.id')->get();
+        $this->admincheck();
+        $user_request_cosrent = DB::table("request")
+            ->select('request.*', 'users.name', 'users.email', 'users.id as user_id')
+            ->join('users', 'request.user_id', '=', 'users.id')
+            ->get();
         // $user_request_cosrent = RequestCosrent::with('user:id,name,email')->get();
         $auth = auth()->user();
         return Inertia::render("Admin/Cosrent/Request", [
@@ -86,6 +107,7 @@ class UserController extends Controller
 
     public function approve(Request $request, string $id)
     {
+        $this->admincheck();
         $request->validate([
             "user_id" => "required",
             "status" => "required",
@@ -138,6 +160,7 @@ class UserController extends Controller
 
     public function reject(Request $request, string $id)
     {
+        $this->admincheck();
         $request->validate([
             "status" => "required",
         ], [

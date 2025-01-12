@@ -30,8 +30,29 @@ class UserSeeder extends Seeder
         ]);
 
         User::create([
+            'name' => 'Cosrent User2',
+            'email' => 'cosrent2@example.com',
+            'password' => Hash::make('password'),
+            'role_id' => $cosrentRole->id,
+        ]);
+
+        User::create([
             'name' => 'Regular User',
             'email' => 'user@example.com',
+            'password' => Hash::make('password'),
+            'role_id' => $userRole->id,
+        ]);
+
+        User::create([
+            'name' => 'Regular User2',
+            'email' => 'user2@example.com',
+            'password' => Hash::make('password'),
+            'role_id' => $userRole->id,
+        ]);
+
+        User::create([
+            'name' => 'Regular User3',
+            'email' => 'user3@example.com',
             'password' => Hash::make('password'),
             'role_id' => $userRole->id,
         ]);

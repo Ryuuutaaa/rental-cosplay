@@ -64,13 +64,11 @@ Route::middleware('auth')->group(function () {
 
         // user
         Route::get("/user", [UserController::class, 'index'])->name("admin.user");
-        Route::get("/user/create", [UserController::class, 'create'])->name("admin.user.create");
-        Route::post("/user", [UserController::class, "store"])->name("admin.user.store");
-        Route::get("/user/{id}/edit", [UserController::class, "edit"])->name("admin.user.edit");
-        Route::put("/user/{id}", [UserController::class, "update"])->name("admin.user.update");
-        Route::delete("/user/{id}", [UserController::class, "destroy"])->name("admin.user.destroy");
-
-        //tambahan user yang request menjadi cosrent
+        Route::get("/user/banned", [UserController::class, "bannedlist"])->name('admin.user.bannedlist');
+        Route::get('/user/{id}/detail', [UserController::class, 'detail'])->name('admin.user.detail');
+        Route::put('/user/{id}/ban', [UserController::class, 'ban'])->name('admin.user.banned');
+        Route::put('/user/{id}/unban', [UserController::class, 'unban'])->name('admin.user.unban');
+        //tambahan route user yang request menjadi cosrent
         Route::get("/user/getrequest", [UserController::class, "getrequest"])->name("admin.cosrent.getrequest");
         Route::post("/user/{id}/approve", [UserController::class, "approve"])->name("admin.user.approve");
         Route::post("/user/{id}/reject", [UserController::class, "reject"])->name("admin.user.reject");

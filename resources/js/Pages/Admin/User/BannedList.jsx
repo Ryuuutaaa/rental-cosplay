@@ -2,45 +2,26 @@ import NavLink from "@/Components/NavLink";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, usePage } from "@inertiajs/react";
 
-export default function User({ datas }) {
+export default function BannedList({ datas }) {
     const { flash = {}, errors: pageErrors = {} } = usePage().props;
     return (
         <AuthenticatedLayout
             header={
-                <div className="flex justify-between">
-                    <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                        User
-                    </h2>
-                    <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                        Nanti search disini
-                    </h2>
-                </div>
+                <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+                    Banned List
+                </h2>
             }
         >
-            <Head title="User" />
+            <Head title="Banned List" />
 
             <div className="m-10">
-                {/* Tombol Lihat Banned List */}
-                <NavLink href={route("admin.user.bannedlist")}>
+                {/* Tombol Kembali */}
+                <NavLink href={route("admin.user")}>
                     <button
                         type="button"
-                        className="flex text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 focus:outline-none dark:focus:ring-purple-800"
+                        className="flex text-white bg-slate-700 hover:bg-slate-800 focus:ring-4 focus:ring-slate-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-slate-600 dark:hover:bg-slate-700 focus:outline-none dark:focus:ring-slate-800"
                     >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                            className="w-5 h-5"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M12 4.5v15m7.5-7.5h-15"
-                            />
-                        </svg>
-                        See Banned List
+                        Kembali
                     </button>
                 </NavLink>
 

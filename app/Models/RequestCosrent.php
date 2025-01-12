@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\RequestStatus;
 use Illuminate\Database\Eloquent\Model;
 
 class RequestCosrent extends Model
@@ -18,6 +19,13 @@ class RequestCosrent extends Model
         'created_at',
         'updated_at',
     ];
+
+    public function cast(): array
+    {
+        return [
+            'status' => RequestStatus::class,
+        ];
+    }
 
     public function user()
     {
