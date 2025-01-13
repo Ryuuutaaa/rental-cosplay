@@ -128,6 +128,23 @@ export default function App() {
                         </div>
                     </div>
 
+                    {/* brand */}
+
+                    <div>
+                        <label
+                            htmlFor="barnd"
+                            className="block text-sm font-medium text-gray-200"
+                        >
+                            Brand
+                        </label>
+                        <input
+                            type="text"
+                            id="barnd"
+                            name="barnd"
+                            className="mt-1 block w-full border-gray-600 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-700 text-gray-200 placeholder-gray-400"
+                        />
+                    </div>
+
                     {/* Description */}
                     <div>
                         <label
