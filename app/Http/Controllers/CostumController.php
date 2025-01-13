@@ -45,7 +45,7 @@ class CostumController extends Controller
     public function create()
     {
         $categories = Category::all();
-        return Inertia::render("Cosrent/Orders/Create", [
+        return Inertia::render("Cosrent/Costume/Create", [
             'categories' => $categories
         ]);
     }

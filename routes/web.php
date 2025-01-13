@@ -82,6 +82,8 @@ Route::middleware('auth')->group(function () {
 
         // costum
         Route::get("/costum", [CostumController::class, 'index'])->name("cosrent.costum");
+        Route::get("/costum/create", [CostumController::class, 'create'])->name("cosrent.costum.create");
+
 
         // order
         Route::get("/order", [OrderListController::class, 'index'])->name("cosrent.order");
