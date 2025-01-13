@@ -11,6 +11,7 @@ class ImageOfCostum extends Model
     protected $fillable = [
         "costum_id",
         "images_link",
+        "partial_costum_id"
     ];
 
     protected $guarded = [

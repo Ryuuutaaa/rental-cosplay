@@ -11,23 +11,27 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('images_of_costum', function (Blueprint $table) {
+        Schema::create('partial_costumes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('costum_id')
-                ->nullable()
-                ->index()
                 ->references('id')
                 ->on('costum')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->foreignId('partial_costum_id')
+            $table->foreignId('cosrent_id')
                 ->nullable()
                 ->index()
                 ->references('id')
-                ->on('partial_costumes')
+                ->on('cosrent')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->string('images_link');
+            $table->string('name');
+            $table->string('description');
+            $table->string('price');
+            $table->enum('size', ['xs', 's', 'm', 'l', 'xl', 'xxl', 'other'])->default('other');
+            $table->string('brand')->nullable();
+            $table->enum('status', ['ready', 'rented'])->default('ready');
+            $table->integer('stock')->default(1);
             $table->timestamps();
         });
     }
@@ -37,6 +41,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('images_of_costum');
+        Schema::dropIfExists('partial_costumes');
     }
 };

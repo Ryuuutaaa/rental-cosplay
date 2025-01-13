@@ -7,17 +7,23 @@ use Inertia\Inertia;
 
 class OrderListController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function checkcosrent()
     {
         $userRole = auth()->user()->role->name ?? null;
         if ($userRole !== 'cosrent') {
             abort(403, 'Unauthorized access');
         }
-
-        return Inertia::render("Cosrent/Order");
+    }
+    public function __construct()
+    {
+        $this->checkcosrent();
+    }
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        return Inertia::render("Cosrent/Orders/App");
     }
 
     /**
