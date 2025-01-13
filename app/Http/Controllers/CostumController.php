@@ -28,6 +28,17 @@ class CostumController extends Controller
         $user = Cosrent::where('user_id', $auth_user_id)->first();
         return $user;
     }
+
+    public function search(Request $request)
+    {
+        $costumes = Costum::where('cosrent_id', $this->getCosrentAccount()->id)
+            ->search(
+                keyword: $request->search,
+                columns: ['name', 'price', 'brand'],
+            )->get();
+
+        return response()->json($costumes, 200);
+    }
     /**
      * Display a listing of the resource.
      */

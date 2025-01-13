@@ -75,6 +75,11 @@ Route::middleware('auth')->group(function () {
         Route::get("/user/getrequest", [UserController::class, "getrequest"])->name("admin.cosrent.getrequest");
         Route::post("/user/{id}/approve", [UserController::class, "approve"])->name("admin.user.approve");
         Route::post("/user/{id}/reject", [UserController::class, "reject"])->name("admin.user.reject");
+        //search user & banned search
+        Route::get('/users/search', [UserController::class, 'search'])
+            ->name('admin.users.search');
+        Route::get('/users/banned/search', [UserController::class, 'searchbanned'])
+            ->name('admin.users.search.banned');
     });
 
     // Routes cosrent
@@ -85,6 +90,15 @@ Route::middleware('auth')->group(function () {
 
         // costum
         Route::get("/costum", [CostumController::class, 'index'])->name("cosrent.costum");
+        Route::get("/costum/create", [CostumController::class, 'create'])->name("cosrent.costum.create");
+        Route::post("/costum", [CostumController::class, "store"])->name("cosrent.costum.store");
+        Route::get("/costum/{id}", [CostumController::class, "show"])->name("cosrent.costum.show");
+        Route::get("/costum/{id}/edit", [CostumController::class, "edit"])->name("cosrent.costum.edit");
+        Route::put("/costum/{id}", [CostumController::class, "update"])->name("cosrent.costum.update");
+        Route::delete("/costum/{id}", [CostumController::class, "destroy"])->name("cosrent.costum.destroy");
+        //search costum
+        Route::get('/cosrent/costum/search', [CostumController::class, 'search'])
+            ->name('cosrent.costum.search');
 
         // order
         Route::get("/order", [OrderListController::class, 'index'])->name("cosrent.order");

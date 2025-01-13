@@ -21,6 +21,18 @@ class UserController extends Controller
             abort(403, 'Unauthorized access');
         }
     }
+
+    public function search(Request $request)
+    {
+        $users = User::where('role_id', '!=', Role::where('name', 'admin')->first()->id)
+            ->where('status', UserStatus::Active->value)
+            ->search(
+                keyword: $request->search,
+                columns: ['name', 'email'],
+            )->get();
+
+        return response()->json($users, 200);
+    }
     /**
      * Display a listing of the resource.
      */
@@ -48,6 +60,18 @@ class UserController extends Controller
         return Inertia::render("Admin/User/BannedList", [
             "datas" => $users
         ]);
+    }
+
+    public function searchbanned(Request $request)
+    {
+        $users = User::where('role_id', '!=', Role::where('name', 'admin')->first()->id)
+            ->where('status', UserStatus::Banned->value)
+            ->search(
+                keyword: $request->search,
+                columns: ['name', 'email'],
+            )->get();
+
+        return response()->json($users, 200);
     }
 
     public function detail(string $id)

@@ -4,9 +4,13 @@ namespace App\Models;
 
 use App\Enums\RequestStatus;
 use Illuminate\Database\Eloquent\Model;
+use Yogameleniawan\SearchSortEloquent\Traits\Sortable;
+use Yogameleniawan\SearchSortEloquent\Traits\Searchable;
 
 class RequestCosrent extends Model
 {
+    use Searchable;
+    use Sortable;
     protected $table = 'request';
 
     protected $fillable = [

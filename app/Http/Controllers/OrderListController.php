@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -17,6 +18,18 @@ class OrderListController extends Controller
     public function __construct()
     {
         $this->checkcosrent();
+    }
+
+    public function search(Request $request)
+    {
+        $orders = Order::search(
+            keyword: $request->search,
+            columns: [
+                //
+            ],
+        )->get();
+
+        return response()->json($orders, 200);
     }
     /**
      * Display a listing of the resource.

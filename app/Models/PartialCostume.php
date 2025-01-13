@@ -5,9 +5,13 @@ namespace App\Models;
 use App\Enums\PartialCostumeSize;
 use App\Enums\PartialCostumeStatus;
 use Illuminate\Database\Eloquent\Model;
+use Yogameleniawan\SearchSortEloquent\Traits\Sortable;
+use Yogameleniawan\SearchSortEloquent\Traits\Searchable;
 
 class PartialCostume extends Model
 {
+    use Searchable;
+    use Sortable;
     protected $table = 'partial_costumes';
 
     protected $fillable = [

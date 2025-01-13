@@ -1,19 +1,52 @@
 import NavLink from "@/Components/NavLink";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, usePage } from "@inertiajs/react";
+import { useState, useEffect } from "react";
 
 export default function User({ datas }) {
+    const [search, setSearch] = useState("");
+    const [filteredData, setFilteredData] = useState(datas);
     const { flash = {}, errors: pageErrors = {} } = usePage().props;
+
+    useEffect(() => {
+        if (search.trim() === "") {
+            setFilteredData(datas);
+            return;
+        }
+
+        fetch(
+            route("admin.users.search") +
+                `?search=${encodeURIComponent(search)}`
+        )
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then((data) => {
+                setFilteredData(data);
+            })
+            .catch((error) => {
+                console.error("Error fetching data:", error.message);
+            });
+    }, [search]);
     return (
         <AuthenticatedLayout
             header={
                 <div className="flex justify-between">
                     <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                        User
+                        Users
                     </h2>
-                    <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                        Nanti search disini
-                    </h2>
+                    <div className="mb-4">
+                        <input
+                            type="text"
+                            className="border border-gray-300 rounded-lg px-4 py-2 w-full"
+                            placeholder="Search Users..."
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
+                    </div>
                 </div>
             }
         >
@@ -73,14 +106,14 @@ export default function User({ datas }) {
                             </tr>
                         </thead>
                         <tbody>
-                            {datas.length === 0 && (
+                            {filteredData.length === 0 && (
                                 <tr>
                                     <td colSpan="4" className="px-6 py-4">
                                         No data found.
                                     </td>
                                 </tr>
                             )}
-                            {datas.map((data) => (
+                            {filteredData.map((data) => (
                                 <tr
                                     key={data.id}
                                     className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
