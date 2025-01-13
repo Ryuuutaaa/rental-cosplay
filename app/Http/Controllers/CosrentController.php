@@ -23,6 +23,16 @@ class CosrentController extends Controller
             abort(403, 'Unauthorized access');
         }
     }
+
+    public function search(Request $request)
+    {
+        $cosrents = Cosrent::search(
+            keyword: $request->search,
+            columns: ['cosrent_name', 'telp_number', 'address'],
+        )->get();
+
+        return response()->json($cosrents, 200);
+    }
     /**
      * Display a listing of the resource.
      */

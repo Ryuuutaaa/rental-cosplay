@@ -60,6 +60,9 @@ Route::middleware('auth')->group(function () {
         Route::get("/cosrent/{id}/edit", [CosrentController::class, "edit"])->name("admin.cosrent.edit");
         Route::put("/cosrent/{id}", [CosrentController::class, "update"])->name("admin.cosrent.update");
         Route::delete("/cosrent/{id}", [CosrentController::class, "destroy"])->name("admin.cosrent.destroy");
+        //search cosrent
+        Route::get('/admin/cosrent/search', [CosrentController::class, 'search'])
+            ->name('admin.cosrent.search');
 
 
         // user

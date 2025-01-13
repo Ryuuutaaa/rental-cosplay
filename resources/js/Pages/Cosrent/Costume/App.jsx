@@ -44,7 +44,7 @@ export default function App({ datas }) {
                                 <h1 className="text-2xl font-bold mt-0">
                                     {data.name}
                                 </h1>
-                                <p className="text-sm">{data.description}}</p>
+                                <p className="text-sm">{data.description}</p>
                             </div>
 
                             {/* aksi */}
@@ -52,10 +52,10 @@ export default function App({ datas }) {
                                 <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                                     Detail
                                 </button>
-                                <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                <button className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">
                                     Edit
                                 </button>
-                                <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
                                     Hapus
                                 </button>
                             </div>
@@ -87,10 +87,10 @@ export default function App({ datas }) {
                             <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                                 Detail
                             </button>
-                            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            <button className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">
                                 Edit
                             </button>
-                            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
                                 Hapus
                             </button>
                         </div>

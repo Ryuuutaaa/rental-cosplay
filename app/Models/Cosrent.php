@@ -3,9 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Yogameleniawan\SearchSortEloquent\Traits\Searchable;
+use Yogameleniawan\SearchSortEloquent\Traits\Sortable;
 
 class Cosrent extends Model
 {
+    use Searchable;
+    use Sortable;
     protected $table = "cosrent";
 
     protected $fillable = [

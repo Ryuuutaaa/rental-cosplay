@@ -12,7 +12,8 @@
         "laravel/octane": "^2.6",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
-        "tightenco/ziggy": "^2.0"
+        "tightenco/ziggy": "^2.0",
+        "yogameleniawan/search-sort-eloquent": "^1.2"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
