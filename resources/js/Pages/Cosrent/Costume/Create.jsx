@@ -1,9 +1,23 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head } from "@inertiajs/react";
+import { Head, Link, useForm, usePage } from "@inertiajs/react";
 import { useState } from "react";
 
-export default function App() {
+export default function App({ categories, sizes }) {
     const [images, setImages] = useState([]);
+
+    const category = categories.map((category) => category.name);
+    const size = sizes.map((size) => size);
+    const { flash = {}, errors: pageErrors = {} } = usePage().props;
+    const { data, setData, post, processing, errors, reset } = useForm({
+        name: "",
+        price: "",
+        category_id: "",
+        size: "",
+        brand: "",
+        status: "",
+        description: "",
+        image: "",
+    });
 
     const handleImageChange = (event) => {
         const files = Array.from(
@@ -34,6 +48,16 @@ export default function App() {
         handleImageChange(event);
     };
 
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        post(route("cosrent.costum.store"){
+            onSuccess: () => {
+            reset(); // Reset form state
+            setImages([]); // Clear uploaded images
+        },
+        });
+    };
+
     return (
         <AuthenticatedLayout
             header={
@@ -46,9 +70,29 @@ export default function App() {
 
             <div className="max-w-5xl mx-auto bg-gray-800 shadow-xl border border-gray-700 rounded-lg p-10 mt-8">
                 <h2 className="text-3xl font-semibold mb-8 text-gray-200 text-center">
-                    Create Product
+                    Create Costume
                 </h2>
-                <form id="productForm" className="space-y-8">
+
+                {/* Flash Message */}
+                {flash.success && (
+                    <div className="mb-4 text-green-600 dark:text-green-400">
+                        {flash.success}
+                    </div>
+                )}
+                {flash.error && (
+                    <div className="mb-4 text-red-600 dark:text-red-400">
+                        {flash.error}
+                    </div>
+                )}
+
+                <form
+                    id="productForm"
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        handleSubmit(e);
+                    }}
+                    className="space-y-8"
+                >
                     {/* Grid Layout for Inputs */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         {/* Name */}
@@ -63,6 +107,11 @@ export default function App() {
                                 type="text"
                                 id="name"
                                 name="name"
+                                value={data.name}
+                                onChange={(e) =>
+                                    setData("name", e.target.value)
+                                }
+                                required
                                 className="mt-1 block w-full border-gray-600 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-700 text-gray-200 placeholder-gray-400"
                             />
                         </div>
@@ -78,16 +127,21 @@ export default function App() {
                             <select
                                 id="category"
                                 name="category"
+                                value={data.category}
+                                onChange={(e) =>
+                                    setData("category", e.target.value)
+                                }
+                                required
                                 className="mt-1 block w-full border-gray-600 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-700 text-gray-200 placeholder-gray-400"
                             >
                                 <option value="">
                                     Select Category Costume
                                 </option>
-                                <option value="anime">Anime</option>
-                                <option value="genshin">Genshin</option>
-                                <option value="honkai-impact">
-                                    Honkai Impact
-                                </option>
+                                {category.map((category) => (
+                                    <option key={category} value={category}>
+                                        {category}
+                                    </option>
+                                ))}
                             </select>
                         </div>
 
@@ -102,12 +156,19 @@ export default function App() {
                             <select
                                 id="size"
                                 name="size"
+                                value={data.size}
+                                onChange={(e) =>
+                                    setData("size", e.target.value)
+                                }
+                                required
                                 className="mt-1 block w-full border-gray-600 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-700 text-gray-200 placeholder-gray-400"
                             >
                                 <option value="">Select Size Costume</option>
-                                <option value="s">S</option>
-                                <option value="m">M</option>
-                                <option value="l">L</option>
+                                {size.map((size) => (
+                                    <option key={size} value={size}>
+                                        {size.toUpperCase()}
+                                    </option>
+                                ))}
                             </select>
                         </div>
 
@@ -120,8 +181,13 @@ export default function App() {
                                 Price
                             </label>
                             <input
+                                required
                                 type="text"
                                 id="price"
+                                value={data.price}
+                                onChange={(e) =>
+                                    setData("price", e.target.value)
+                                }
                                 name="price"
                                 className="mt-1 block w-full border-gray-600 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-700 text-gray-200 placeholder-gray-400"
                                 onInput={(e) => {
@@ -138,15 +204,18 @@ export default function App() {
 
                     <div>
                         <label
-                            htmlFor="barnd"
+                            htmlFor="brand"
                             className="block text-sm font-medium text-gray-200"
                         >
                             Brand
                         </label>
                         <input
                             type="text"
-                            id="barnd"
-                            name="barnd"
+                            id="brand"
+                            name="brand"
+                            value={data.brand}
+                            onChange={(e) => setData("brand", e.target.value)}
+                            required
                             className="mt-1 block w-full border-gray-600 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-700 text-gray-200 placeholder-gray-400"
                         />
                     </div>
@@ -162,7 +231,12 @@ export default function App() {
                         <textarea
                             id="description"
                             name="description"
+                            value={data.description}
+                            onChange={(e) =>
+                                setData("description", e.target.value)
+                            }
                             rows="4"
+                            required
                             className="mt-1 block w-full border-gray-600 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-700 text-gray-200 placeholder-gray-400"
                         ></textarea>
                     </div>
@@ -198,7 +272,9 @@ export default function App() {
                                 multiple
                                 accept="image/*"
                                 className="hidden"
+                                value={data.image}
                                 onChange={handleImageChange}
+                                required
                             />
                         </div>
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-4">
@@ -219,6 +295,7 @@ export default function App() {
 
                     <button
                         type="submit"
+                        disabled={processing}
                         className="w-full bg-blue-500 text-white py-3 px-6 rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                     >
                         Submit

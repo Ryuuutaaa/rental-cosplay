@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\CostumeSize;
 use Inertia\Inertia;
 use App\Models\Cosrent;
 use App\Models\Category;
@@ -55,6 +56,20 @@ class CostumController extends Controller
         ]);
     }
 
+    public function sizes()
+    {
+        $size =  [
+            CostumeSize::XS->value,
+            CostumeSize::S->value,
+            CostumeSize::M->value,
+            CostumeSize::L->value,
+            CostumeSize::XL->value,
+            CostumeSize::XXL->value,
+            CostumeSize::OTHER->value
+        ];
+        return $size;
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -62,7 +77,8 @@ class CostumController extends Controller
     {
         $categories = Category::all();
         return Inertia::render("Cosrent/Costume/Create", [
-            'categories' => $categories
+            'categories' => $categories,
+            'sizes' => $this->sizes()
         ]);
     }
 
