@@ -32,9 +32,11 @@ class CostumController extends Controller
     public function search(Request $request)
     {
         $costumes = Costum::where('cosrent_id', $this->getCosrentAccount()->id)
+            ->join('category', 'costum.category_id', '=', 'category.id')
+            ->select('costum.*', 'category.name as category_name')
             ->search(
                 keyword: $request->search,
-                columns: ['name', 'price', 'brand'],
+                columns: ['costum.name', 'price', 'category.name', 'size', 'brand', 'status'],
             )->get();
 
         return response()->json($costumes, 200);
@@ -44,7 +46,10 @@ class CostumController extends Controller
      */
     public function index()
     {
-        $costumes = Costum::where('cosrent_id', $this->getCosrentAccount()->id)->get();
+        $costumes = Costum::where('cosrent_id', $this->getCosrentAccount()->id)
+            ->join('category', 'costum.category_id', '=', 'category.id')
+            ->select('costum.*', 'category.name as category_name')
+            ->get();
         return Inertia::render("Cosrent/Costume/App", [
             'datas' => $costumes
         ]);
