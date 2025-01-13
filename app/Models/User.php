@@ -64,4 +64,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Order::class);
     }
+
+    public function biodata()
+    {
+        return $this->hasOne(Biodata::class);
+    }
 }

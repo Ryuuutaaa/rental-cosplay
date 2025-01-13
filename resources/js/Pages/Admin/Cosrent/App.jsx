@@ -9,8 +9,6 @@ export default function Cosrent({ datas = [] }) {
     const [filteredData, setFilteredData] = useState(datas);
     const { flash = {}, errors: pageErrors = {} } = usePage().props;
 
-    console.log(filteredData);
-
     const handleSubmit = (e, id) => {
         e.preventDefault();
         Inertia.delete(route("admin.cosrent.destroy", id));
@@ -18,11 +16,10 @@ export default function Cosrent({ datas = [] }) {
 
     useEffect(() => {
         if (search.trim() === "") {
-            setFilteredData(datas); // Reset data saat input kosong
+            setFilteredData(datas);
             return;
         }
 
-        // Fetch data dari server
         fetch(
             route("admin.cosrent.search") +
                 `?search=${encodeURIComponent(search)}`
