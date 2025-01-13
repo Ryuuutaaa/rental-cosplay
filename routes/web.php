@@ -119,6 +119,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    //cosrent profile
+    Route::post('/profile/cosrent', [ProfileController::class, 'cosrent'])->name('profile.cosrent.update');
 
     //tambahan user yang request menjadi cosrent
     Route::post("/user/request", [UserController::class, "request"])->name("user.request");

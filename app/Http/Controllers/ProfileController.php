@@ -2,17 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProfileUpdateRequest;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Models\Cosrent;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Redirect;
+use App\Http\Requests\ProfileUpdateRequest;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 class ProfileController extends Controller
 {
+    public function getCosrentAccount()
+    {
+        $auth_user_id = auth()->user()->id;
+        $user = Cosrent::where('user_id', $auth_user_id)->first();
+        return $user;
+    }
     /**
      * Display the user's profile form.
      */
@@ -21,6 +28,16 @@ class ProfileController extends Controller
         $userRole = auth()->user()->role->name ?? null;
         if ($userRole === 'admin|cosrent|user') {
             abort(403, 'Unauthorized access');
+        }
+
+        if ($userRole === 'cosrent') {
+            $cosrent_account = $this->getCosrentAccount();
+            return Inertia::render('Profile/Edit', [
+                'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
+                'status' => session('status'),
+                'userRole' => $userRole,
+                'cosrent_account' => $cosrent_account
+            ]);
         }
 
         return Inertia::render('Profile/Edit', [
@@ -44,6 +61,37 @@ class ProfileController extends Controller
         $request->user()->save();
 
         return Redirect::route('profile.edit');
+    }
+
+    public function cosrent(Request $request)
+    {
+
+        $request->validate([
+            'cosrent_name' => 'required|string',
+            'telp_number' => 'required|numeric',
+            'address' => 'required|string',
+        ], [
+            'name.required' => 'Nama cosrent harus diisi',
+            'name.string' => 'Nama cosrent harus berupa string',
+            'telp_number.required' => 'Nomor telp harus diisi',
+            'telp_number.numeric' => 'Nomor telp harus berupa angka',
+            'address.required' => 'Alamat harus diisi',
+            'address.string' => 'Alamat harus berupa string'
+        ]);
+
+        $cosrent = Cosrent::find($request->cosrent_id);
+        if ($cosrent == null) {
+            return redirect()
+                ->route('cosrent.dashboard')
+                ->with('error', 'Data cosrent tidak ditemukan!');
+        }
+
+        $update_cosrent = $cosrent->update([
+            'cosrent_name' => $request->cosrent_name,
+            'telp_number' => $request->telp_number,
+            'address' => $request->address,
+        ]);
+        return;
     }
 
     /**
