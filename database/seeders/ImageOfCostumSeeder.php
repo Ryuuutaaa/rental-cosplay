@@ -185,11 +185,11 @@ class ImageOfCostumSeeder extends Seeder
 
         $welt = [
             [
-                'costum_id' => 12,
+                'costum_id' => 13,
                 'images_link' => 'uploads/costumes/welt1.jpg',
             ],
             [
-                'costum_id' => 12,
+                'costum_id' => 13,
                 'images_link' => 'uploads/costumes/welt2.jpg',
             ]
         ];
@@ -199,11 +199,11 @@ class ImageOfCostumSeeder extends Seeder
 
         $danheng = [
             [
-                'costum_id' => 12,
+                'costum_id' => 14,
                 'images_link' => 'uploads/costumes/danheng1.jpg',
             ],
             [
-                'costum_id' => 12,
+                'costum_id' => 14,
                 'images_link' => 'uploads/costumes/danheng2.jpg',
             ]
         ];
