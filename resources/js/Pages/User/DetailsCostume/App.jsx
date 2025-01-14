@@ -1,8 +1,7 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
 
-export default function Dashboard({ username }) {
-    console.log({ username });
+export default function DetailCostume({ costume }) {
     return (
         <AuthenticatedLayout
             header={
@@ -11,117 +10,115 @@ export default function Dashboard({ username }) {
                 </h2>
             }
         >
-            <Head title="Detail Costume" />
+            <Head title={`Detail Costume - ${costume.name}`} />
 
             <div className="p-8 min-h-screen">
-                <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
+                <div className="max-w-5xl mx-auto bg-gray-800 rounded-xl shadow-2xl overflow-hidden ">
                     <div className="grid grid-cols-1 md:grid-cols-2">
                         {/* Bagian Gambar */}
-                        <div className="p-6">
-                            <div className="relative">
+                        <div className="p-6 bg-slate-700">
+                            <div className="relative mb-4">
                                 <img
                                     id="main-image"
-                                    src="https://i.pinimg.com/474x/e7/23/5b/e7235b5f932a5e30be40ab955cd58909.jpg"
-                                    alt="Product Image"
-                                    className="w-full h-[530px] object-cover  rounded-lg"
+                                    src={
+                                        costume.images_of_costum[0]
+                                            ?.images_link ||
+                                        "https://via.placeholder.com/150"
+                                    }
+                                    alt={costume.name}
+                                    className="w-full h-[550px] object-cover rounded-xl shadow-md"
                                 />
                             </div>
-                            <div className="flex justify-center mt-4 space-x-2">
-                                <button
-                                    className="w-16 h-16 border rounded-lg overflow-hidden hover:ring-2 hover:ring-blue-500"
-                                    onClick={() =>
-                                        document
-                                            .getElementById("main-image")
-                                            .setAttribute(
-                                                "src",
-                                                "https://i.pinimg.com/474x/e7/23/5b/e7235b5f932a5e30be40ab955cd58909.jpg"
-                                            )
-                                    }
-                                >
-                                    <img
-                                        src="https://i.pinimg.com/474x/e7/23/5b/e7235b5f932a5e30be40ab955cd58909.jpg"
-                                        alt="Thumbnail"
-                                        className="w-full h-full object-cover"
-                                    />
-                                </button>
-                                <button
-                                    className="w-16 h-16 border rounded-lg overflow-hidden hover:ring-2 hover:ring-blue-500"
-                                    onClick={() =>
-                                        document
-                                            .getElementById("main-image")
-                                            .setAttribute(
-                                                "src",
-                                                "https://i.pinimg.com/474x/b0/a0/f8/b0a0f87242b5c33a0873c586a1ba5823.jpg"
-                                            )
-                                    }
-                                >
-                                    <img
-                                        src="https://i.pinimg.com/474x/b0/a0/f8/b0a0f87242b5c33a0873c586a1ba5823.jpg"
-                                        alt="Thumbnail"
-                                        className="w-full h-full object-cover"
-                                    />
-                                </button>
-                                <button
-                                    className="w-16 h-16 border rounded-lg overflow-hidden hover:ring-2 hover:ring-blue-500"
-                                    onClick={() =>
-                                        document
-                                            .getElementById("main-image")
-                                            .setAttribute(
-                                                "src",
-                                                "https://i.pinimg.com/474x/68/2b/3a/682b3a7cb8d7f3e3cbaf3e564f5f1b30.jpg"
-                                            )
-                                    }
-                                >
-                                    <img
-                                        src="https://i.pinimg.com/474x/68/2b/3a/682b3a7cb8d7f3e3cbaf3e564f5f1b30.jpg"
-                                        alt="Thumbnail"
-                                        className="w-full h-full object-cover"
-                                    />
-                                </button>
+                            <div className="flex justify-center mt-4 space-x-3">
+                                {costume.images_of_costum.map(
+                                    (image, index) => (
+                                        <button
+                                            key={index}
+                                            className="w-16 h-16 border rounded-lg overflow-hidden hover:ring-2 hover:ring-blue-500 transform hover:scale-105 transition"
+                                            onClick={() =>
+                                                document
+                                                    .getElementById(
+                                                        "main-image"
+                                                    )
+                                                    .setAttribute(
+                                                        "src",
+                                                        image.images_link
+                                                    )
+                                            }
+                                        >
+                                            <img
+                                                src={image.images_link}
+                                                alt={`Thumbnail ${index + 1}`}
+                                                className="w-full h-full object-cover"
+                                            />
+                                        </button>
+                                    )
+                                )}
                             </div>
                         </div>
 
                         {/* Bagian Detail */}
-                        <div className="p-6">
-                            <h1 className="text-2xl font-bold text-gray-800 mb-4">
-                                Nama Produk yang Sangat Panjang Sekali
-                            </h1>
-                            <p className="text-gray-600 mb-4">
-                                Deskripsi produk yang sangat lengkap dan menarik
-                                untuk menjelaskan segala detail tentang produk
-                                ini.
-                            </p>
-                            <div className="text-lg font-semibold text-gray-800 mb-4">
-                                Harga:{" "}
-                                <span className="text-blue-500">
-                                    Rp 150.000
-                                </span>
-                            </div>
-                            <ul className="space-y-2 mb-6">
-                                <li>
-                                    <strong>Category:</strong> Fashion
-                                </li>
-                                <li>
-                                    <strong>Nama Toko:</strong> Toko Stylish
-                                </li>
-                                <li>
-                                    <strong>Size:</strong> L
-                                </li>
-                                <li>
-                                    <strong>Brand:</strong> Brand Premium
-                                </li>
-                                <li>
-                                    <strong>Status:</strong>{" "}
-                                    <span className="text-green-500 font-bold">
-                                        Ready
+                        <div className="p-6 flex flex-col justify-between">
+                            <div>
+                                <h1 className="text-3xl font-bold text-white mb-4">
+                                    {costume.name}
+                                </h1>
+                                <p className="text-white mb-6 text-justify leading-relaxed font-bold">
+                                    {costume.description}
+                                </p>
+                                <div className="text-lg font-bold text-white mb-6">
+                                    Harga:{" "}
+                                    <span className="text-blue-500 font-bold">
+                                        Rp {costume.price.toLocaleString()}
                                     </span>
-                                </li>
-                                <li>
-                                    <strong>Stock:</strong> 20 pcs
-                                </li>
-                            </ul>
-                            <button className="w-full bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium py-2 px-4 rounded-lg">
-                                Add to Cart
+                                </div>
+                                <ul className="space-y-2 text-white font-bold ">
+                                    <li>
+                                        <strong>Category:</strong>{" "}
+                                        {costume.category.name}
+                                    </li>
+                                    <li>
+                                        <strong>Size:</strong> {costume.size}
+                                    </li>
+                                    <li>
+                                        <strong>Brand:</strong> {costume.brand}
+                                    </li>
+                                    <li>
+                                        <strong>Status:</strong>{" "}
+                                        <span
+                                            className={`font-bold ${
+                                                costume.status === "ready"
+                                                    ? "text-green-500"
+                                                    : "text-red-500"
+                                            }`}
+                                        >
+                                            {costume.status === "ready"
+                                                ? "Ready"
+                                                : "Unavailable"}
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <strong>Stock:</strong> {costume.stock}{" "}
+                                        pcs
+                                    </li>
+                                </ul>
+                            </div>
+                            <button className="mt-6 w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white text-sm font-medium py-3 px-4 rounded-lg shadow-md transform transition duration-300 hover:scale-105 flex items-center gap-2 justify-center">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke-width="1.5"
+                                    stroke="currentColor"
+                                    class="size-6"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
+                                    />
+                                </svg>
+                                Rent Now
                             </button>
                         </div>
                     </div>

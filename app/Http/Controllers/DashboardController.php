@@ -8,6 +8,8 @@ use App\Models\Cosrent;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Costum;
+use Illuminate\Support\Facades\Storage;
 
 class DashboardController extends Controller
 {
@@ -52,8 +54,21 @@ class DashboardController extends Controller
             abort(403, 'Unauthorized access');
         }
 
+        $costume = Costum::with(['category', 'images_of_costum' => function ($query) {
+            $query->select('id', 'costum_id', 'images_link');
+            $query->orderBy('id', 'asc');
+        }])->get()
+            ->map(function ($image) {
+                $image->images_of_costum->map(function ($item) {
+                    $item->images_link =  Storage::url('public/' . $item->images_link);
+                    return $item;
+                });
+                return $image;
+            });
+
         return Inertia::render('User/Dashboard', [
             'username' => auth()->user()->name,
+            'datas' => $costume
         ]);
     }
 }

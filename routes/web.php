@@ -111,7 +111,7 @@ Route::middleware('auth')->group(function () {
 
         // dahboard
         Route::get('/dashboard', [DashboardController::class, 'indexUser'])->name('user.dashboard');
-        Route::get("/detail-costum/", [LandingPageController::class, 'detailCostumUser'])->name("user.detailCostume");
+        Route::get('/detail-costume/{id}', [LandingPageController::class, 'detailCostumeUser'])->name('user.detailCostume');
 
         // history
         Route::get("/history", [HistoryController::class, 'index'])->name("user.history");
