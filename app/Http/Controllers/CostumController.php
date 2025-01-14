@@ -46,25 +46,15 @@ class CostumController extends Controller
                 columns: ['costum.name', 'price', 'category.name', 'size', 'brand', 'status'],
             )->get()
             ->map(function ($item) {
-                $item->firstImage->images_link = Storage::url('public/' . $item->firstImage->images_link);
+                if ($item->firstImage) {
+                    $item->firstImage->images_link = Storage::url('public/' . $item->firstImage->images_link);
+                }
                 return $item;
             });
 
         return response()->json($costumes, 200);
     }
 
-    public function allCostumeWithImages()
-    {
-        //ini meampilkan semua kostum dengan relasi dari category dan seluruh image_of_costume(dalam bentuk array) dari relasi juga pada model
-        $costume = Costum::with(['category', 'images_of_costum' => function ($query) {
-            $query->select('id', 'costum_id', 'images_link');
-            $query->orderBy('id', 'asc');
-        }])->get();
-
-        return Inertia::render("Cosrent/Costume/All", [
-            'datas' => $costume
-        ]);
-    }
     /**
      * Display a listing of the resource.
      */
@@ -76,7 +66,9 @@ class CostumController extends Controller
             ->with('firstImage')
             ->get()
             ->map(function ($item) {
-                $item->firstImage->images_link = Storage::url('public/' . $item->firstImage->images_link);
+                if ($item->firstImage) {
+                    $item->firstImage->images_link = Storage::url('public/' . $item->firstImage->images_link);
+                }
                 return $item;
             });
 
@@ -203,7 +195,7 @@ class CostumController extends Controller
 
         // Tambahkan URL lengkap untuk setiap gambar
         $costume->images_of_costum->transform(function ($image) {
-            $image->images_link = Storage::url('public/' . $image->images_link);
+            $image->images_link = Storage::url('public/' . $image->images_link) ?? null;
             return $image;
         });
 
@@ -226,7 +218,7 @@ class CostumController extends Controller
 
         // Tambahkan URL lengkap untuk setiap gambar
         $costume->images_of_costum->transform(function ($image) {
-            $image->images_link = Storage::url('public/' . $image->images_link);
+            $image->images_link = Storage::url('public/' . $image->images_link) ?? null;
             return $image;
         });
 

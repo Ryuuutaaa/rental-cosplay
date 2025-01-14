@@ -167,8 +167,10 @@ export default function App({ datas }) {
                                     >
                                         <img
                                             src={
-                                                data.first_image.images_link ??
-                                                ""
+                                                data.first_image
+                                                    ? data.first_image
+                                                          .images_link ?? ""
+                                                    : ""
                                             }
                                             alt={data.name + " image"}
                                             width={100}

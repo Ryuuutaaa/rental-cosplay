@@ -12,7 +12,7 @@ class DatabaseSeeder extends Seeder
         $this->call(UserSeeder::class);
         $this->call(CategorySeeder::class);
         $this->call(CosrentSeeder::class);
-        // $this->call(CostumSeeder::class);
-        // $this->call(ImageOfCostumSeeder::class);
+        $this->call(CostumSeeder::class);
+        $this->call(ImageOfCostumSeeder::class);
     }
 }

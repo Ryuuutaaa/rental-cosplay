@@ -55,25 +55,27 @@ export default function Detail({ datas }) {
                         </div>
 
                         {/* Kumpulan Gambar Kostum */}
-                        <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
-                            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                                Kumpulan Gambar Kostum
-                            </h3>
-                            <div className="grid grid-cols-2 gap-4 mt-4">
-                                {datas.images_of_costum.map((image) => (
-                                    <div
-                                        key={image.id}
-                                        className="bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden shadow-sm"
-                                    >
-                                        <img
-                                            src={image.images_link}
-                                            alt={datas.name}
-                                            className="object-cover w-full h-40"
-                                        />
-                                    </div>
-                                ))}
+                        {datas.images_of_costum ? (
+                            <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
+                                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                                    Kumpulan Gambar Kostum
+                                </h3>
+                                <div className="grid grid-cols-2 gap-4 mt-4">
+                                    {datas.images_of_costum.map((image) => (
+                                        <div
+                                            key={image.id}
+                                            className="bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden shadow-sm"
+                                        >
+                                            <img
+                                                src={image.images_link ?? null}
+                                                alt={datas.name}
+                                                className="object-cover w-full h-40"
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
+                        ) : null}
                     </div>
 
                     {/* Tombol Aksi */}

@@ -13,7 +13,7 @@ export default function Edit({ datas, categories, sizes, cosrent }) {
     console.log(sizes);
     console.log(cosrent);
 
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const { data, setData, put, processing, errors, reset } = useForm({
         name: datas.name,
         description: datas.description,
         price: datas.price,
@@ -23,9 +23,11 @@ export default function Edit({ datas, categories, sizes, cosrent }) {
         new_images: [],
     });
 
+    console.log(errors);
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        post(route("cosrent.costum.update", datas.id), {
+        put(route("cosrent.costum.update", datas.id), {
             preserveScroll: true,
         });
     };
