@@ -54,6 +54,11 @@ class Costum extends Model
         return $this->hasMany(ImageOfCostum::class);
     }
 
+    public function firstImage()
+    {
+        return $this->hasOne(ImageOfCostum::class, 'costum_id')->oldestOfMany(); // Mengambil gambar pertama berdasarkan ID terkecil
+    }
+
     public function partial_costumes()
     {
         return $this->hasMany(PartialCostume::class);

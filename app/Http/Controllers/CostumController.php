@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\CostumeSize;
 use Inertia\Inertia;
+use App\Models\Costum;
 use App\Models\Cosrent;
 use App\Models\Category;
-use App\Models\Costum;
+use App\Enums\CostumeSize;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Models\ImageOfCostum;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class CostumController extends Controller
 {
@@ -35,10 +39,15 @@ class CostumController extends Controller
         $costumes = Costum::where('cosrent_id', $this->getCosrentAccount()->id)
             ->join('category', 'costum.category_id', '=', 'category.id')
             ->select('costum.*', 'category.name as category_name')
+            ->with('firstImage')
             ->search(
                 keyword: $request->search,
                 columns: ['costum.name', 'price', 'category.name', 'size', 'brand', 'status'],
-            )->get();
+            )->get()
+            ->map(function ($item) {
+                $item->firstImage->images_link = Storage::url('public/' . $item->firstImage->images_link);
+                return $item;
+            });
 
         return response()->json($costumes, 200);
     }
@@ -50,7 +59,13 @@ class CostumController extends Controller
         $costumes = Costum::where('cosrent_id', $this->getCosrentAccount()->id)
             ->join('category', 'costum.category_id', '=', 'category.id')
             ->select('costum.*', 'category.name as category_name')
-            ->get();
+            ->with('firstImage')
+            ->get()
+            ->map(function ($item) {
+                $item->firstImage->images_link = Storage::url('public/' . $item->firstImage->images_link);
+                return $item;
+            });
+
         return Inertia::render("Cosrent/Costume/App", [
             'datas' => $costumes
         ]);
@@ -76,9 +91,11 @@ class CostumController extends Controller
     public function create()
     {
         $categories = Category::all();
+        $cosrent = $this->getCosrentAccount();
         return Inertia::render("Cosrent/Costume/Create", [
             'categories' => $categories,
-            'sizes' => $this->sizes()
+            'sizes' => $this->sizes(),
+            'cosrent' => $cosrent
         ]);
     }
 
@@ -87,23 +104,76 @@ class CostumController extends Controller
      */
     public function store(Request $request)
     {
-        $cosrent = $this->getCosrentAccount();
         $request->validate([
-            //
+            "name" => "required|string",
+            "description" => "required|string",
+            "price" => "required|numeric",
+            "category_id" => "required|numeric|in:" . implode(",", Category::all()->pluck('id')->toArray()),
+            "cosrent_id" => "required|numeric|in:" . implode(",", Cosrent::all()->pluck('id')->toArray()),
+            "size" => "required|in:" . implode(",", $this->sizes()),
+            "brand" => "required|string",
+            'images' => 'required|array',
+            "images.*" => "image|mimes:jpg,jpeg,png,bmp,svg,gif|max:2048",
         ], [
-            //
+            'name.required' => 'Nama harus diisi',
+            'name.string' => 'Nama harus berupa string',
+            'description.required' => 'Deskripsi harus diisi',
+            'description.string' => 'Deskripsi harus berupa string',
+            'price.required' => 'Harga harus diisi',
+            'price.numeric' => 'Harga harus berupa angka',
+            'category_id.required' => 'Kategori harus dipilih',
+            'category_id.numeric' => 'Kategori harus berupa angka',
+            'cosrent_id.required' => 'Cosrent harus dipilih',
+            'cosrent_id.numeric' => 'Cosrent harus berupa angka',
+            'size.required' => 'Ukuran harus diisi',
+            'size.in' => 'Ukuran harus sesuai dengan opsi',
+            'brand.required' => 'Merek harus diisi',
+            'brand.string' => 'Merek harus berupa string',
+            'images.required' => 'Gambar harus diisi',
+            'images.array' => 'Gambar harus berupa array',
+            'images.*.image' => 'File harus berupa gambar',
+            'images.*.mimes' => 'Format gambar harus jpg,jpeg,png,bmp,svg,gif',
+            'images.*.max' => 'Ukuran gambar maksimal 2MB',
         ]);
 
-        $costum = Costum::create([
-            'cosrent_id' => $cosrent->id,
-            //
-        ]);
+        try {
+            DB::beginTransaction();
 
-        if ($costum) {
-            return redirect()->route('cosrent.order')->with('success', 'Costum created successfully!');
+            $insert_costum = Costum::create([
+                'name' => $request->name,
+                'description' => $request->description,
+                'price' => $request->price,
+                'category_id' => $request->category_id,
+                'cosrent_id' => $request->cosrent_id,
+                'size' => $request->size,
+                'brand' => $request->brand,
+            ]);
+
+            if ($request->hasFile('images')) {
+                $files = $request->file('images');
+                foreach ($files as $image) {
+                    $extension = $image->getClientOriginalExtension();
+                    $costum = Costum::latest()->first();
+                    $file_name = $costum->name . '-' . date('YmdHis') . '-' . Str::random(10) . '.' . $extension;
+                    $path = "uploads/costumes";
+
+                    $file_path = $image->storeAs($path, $file_name, 'public');
+
+                    ImageOfCostum::create([
+                        'costum_id' => $costum->id,
+                        'images_link' => $file_path,
+                    ]);
+                }
+            }
+
+            DB::commit();
+            return redirect()->route('cosrent.costum.create')->with('success', 'Costum created successfully!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('cosrent.costum.create')->with('error', 'Failed to create costum: ' . $e->getMessage());
         }
-        return redirect()->route('cosrent.order')->with('error', 'Failed to create costum');
     }
+
 
     /**
      * Display the specified resource.
