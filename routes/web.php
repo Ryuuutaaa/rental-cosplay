@@ -5,6 +5,7 @@ use App\Http\Controllers\CosrentController;
 use App\Http\Controllers\CostumController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HistoryController;
+use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\OrderListController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
@@ -110,6 +111,7 @@ Route::middleware('auth')->group(function () {
 
         // dahboard
         Route::get('/dashboard', [DashboardController::class, 'indexUser'])->name('user.dashboard');
+        Route::get("/detail-costum/", [LandingPageController::class, 'detailCostumUser'])->name("user.detailCostume");
 
         // history
         Route::get("/history", [HistoryController::class, 'index'])->name("user.history");

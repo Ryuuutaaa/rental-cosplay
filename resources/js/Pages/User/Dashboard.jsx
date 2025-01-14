@@ -15,7 +15,10 @@ export default function Dashboard({ username }) {
 
             <div className="p-12">
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12">
-                    <div className="max-w-xs mx-auto bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden flex flex-col transform transition-transform duration-300 hover:scale-105 hover:shadow-lg hover:cursor-pointer">
+                    <a
+                        href={route("user.detailCostume")}
+                        className="max-w-xs mx-auto bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden flex flex-col transform transition-transform duration-300 hover:scale-105 hover:shadow-lg hover:cursor-pointer"
+                    >
                         <img
                             src="https://i.pinimg.com/474x/e7/23/5b/e7235b5f932a5e30be40ab955cd58909.jpg"
                             alt="Card Image"
@@ -55,7 +58,7 @@ export default function Dashboard({ username }) {
                                 Rent Now
                             </a>
                         </div>
-                    </div>
+                    </a>
 
                     <div className="max-w-xs mx-auto bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden flex flex-col transform transition-transform duration-300 hover:scale-105 hover:shadow-lg hover:cursor-pointer">
                         <img
