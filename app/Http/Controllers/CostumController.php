@@ -181,10 +181,10 @@ class CostumController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('cosrent.costum.create')->with('success', 'Costum created successfully!');
+            return redirect()->route('cosrent.costum')->with('success', 'Costum created successfully!');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('cosrent.costum.create')->with('error', 'Failed to create costum: ' . $e->getMessage());
+            return redirect()->route('cosrent.costum')->with('error', 'Failed to create costum: ' . $e->getMessage());
         }
     }
 
@@ -247,7 +247,68 @@ class CostumController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $costume = Costum::findOrFail($id);
+
+        $request->validate([
+            "name" => "required|string",
+            "description" => "required|string",
+            "price" => "required|numeric",
+            "category_id" => "required|numeric|in:" . implode(",", Category::all()->pluck('id')->toArray()),
+            "size" => "required|in:" . implode(",", $this->sizes()),
+            "brand" => "required|string",
+            'new_images.*' => "nullable|image|mimes:jpg,jpeg,png,bmp,svg,gif|max:2048",
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            // Update costume details
+            $costume->update([
+                'name' => $request->name,
+                'description' => $request->description,
+                'price' => $request->price,
+                'category_id' => $request->category_id,
+                'size' => $request->size,
+                'brand' => $request->brand,
+            ]);
+
+            // Handle new images if any
+            if ($request->hasFile('new_images')) {
+                $files = $request->file('new_images');
+                foreach ($files as $image) {
+                    $extension = $image->getClientOriginalExtension();
+                    $file_name = $costume->name . '-' . date('YmdHis') . '-' . Str::random(10) . '.' . $extension;
+                    $path = "uploads/costumes";
+
+                    $file_path = $image->storeAs($path, $file_name, 'public');
+
+                    ImageOfCostum::create([
+                        'costum_id' => $costume->id,
+                        'images_link' => $file_path,
+                    ]);
+                }
+            }
+
+            DB::commit();
+            return redirect()->route('cosrent.costum')->with('success', 'Costume updated successfully!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('cosrent.costum')->with('error', 'Failed to update costume: ' . $e->getMessage());
+        }
+    }
+
+    // Tambahkan method untuk menghapus gambar
+    public function deleteImage($imageId)
+    {
+        try {
+            $image = ImageOfCostum::findOrFail($imageId);
+            Storage::delete('public/' . $image->images_link);
+            $image->delete();
+
+            return response()->json(['success' => true], 200);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -255,6 +316,19 @@ class CostumController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $costum_image = ImageOfCostum::where('costum_id', '=', $id)->get();
+        $costum = Costum::find($id);
+
+        foreach ($costum_image as $image) {
+            Storage::delete('public/' . $image->images_link);
+            $image->delete();
+        }
+
+        if (!$costum) {
+            return redirect()->route('cosrent.costum')->with('error', 'Costume not found!');
+        }
+
+        $costum->delete();
+        return redirect()->route('cosrent.costum')->with('success', 'Costume deleted successfully!');
     }
 }

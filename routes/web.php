@@ -100,6 +100,8 @@ Route::middleware('auth')->group(function () {
         //search costum
         Route::get('/cosrent/costum/search', [CostumController::class, 'search'])
             ->name('cosrent.costum.search');
+        //api delete image costum
+        Route::delete('/api/costume/delete-image/{id}', [CostumController::class, 'deleteImage'])->name('cosrent.costum.delete-image');
 
         // order
         Route::get("/order", [OrderListController::class, 'index'])->name("cosrent.order");

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('costum', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('description');
+            $table->text('description');
             $table->string('price');
             $table->foreignId('category_id')
                 ->nullable()
