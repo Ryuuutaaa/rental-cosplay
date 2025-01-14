@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\ImageOfCostum;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
 class CostumController extends Controller
@@ -50,6 +51,19 @@ class CostumController extends Controller
             });
 
         return response()->json($costumes, 200);
+    }
+
+    public function allCostumeWithImages()
+    {
+        //ini meampilkan semua kostum dengan relasi dari category dan seluruh image_of_costume(dalam bentuk array) dari relasi juga pada model
+        $costume = Costum::with(['category', 'images_of_costum' => function ($query) {
+            $query->select('id', 'costum_id', 'images_link');
+            $query->orderBy('id', 'asc');
+        }])->get();
+
+        return Inertia::render("Cosrent/Costume/All", [
+            'datas' => $costume
+        ]);
     }
     /**
      * Display a listing of the resource.
@@ -180,7 +194,22 @@ class CostumController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $costume = Costum::where('id', '=', $id)
+            ->with(['category', 'images_of_costum' => function ($query) {
+                $query->select('id', 'costum_id', 'images_link');
+                $query->orderBy('id', 'asc');
+            }])
+            ->first();
+
+        // Tambahkan URL lengkap untuk setiap gambar
+        $costume->images_of_costum->transform(function ($image) {
+            $image->images_link = Storage::url('public/' . $image->images_link);
+            return $image;
+        });
+
+        return Inertia::render("Cosrent/Costume/Detail", [
+            'datas' => $costume
+        ]);
     }
 
     /**
