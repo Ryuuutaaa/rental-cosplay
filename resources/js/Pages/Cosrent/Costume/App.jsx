@@ -1,10 +1,13 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head, Link } from "@inertiajs/react";
+import { Head, Link, usePage } from "@inertiajs/react";
 import { useState, useEffect } from "react";
+import { Inertia } from "@inertiajs/inertia";
 
 export default function App({ datas }) {
     const [search, setSearch] = useState("");
     const [filteredData, setFilteredData] = useState(datas);
+
+    const { flash = {}, errors: pageErrors = {} } = usePage().props;
 
     useEffect(() => {
         if (search.trim() === "") {
@@ -62,7 +65,7 @@ export default function App({ datas }) {
                     <a href={route("cosrent.costum.create")}>
                         <button
                             type="button"
-                            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 flex gap-2 items-center"
+                            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 flex gap-2 items-center"
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -86,7 +89,7 @@ export default function App({ datas }) {
                     {/* <a href="#">
                         <button
                             type="button"
-                            class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900 flex gap-3 items-center"
+                            className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900 flex gap-3 items-center"
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -94,11 +97,11 @@ export default function App({ datas }) {
                                 viewBox="0 0 24 24"
                                 stroke-width="1.5"
                                 stroke="currentColor"
-                                class="size-6"
+                                className="size-6"
                             >
                                 <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
                                     d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"
                                 />
                             </svg>
@@ -107,35 +110,47 @@ export default function App({ datas }) {
                     </a> */}
                 </div>
 
-                <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+                    {/* Flash Message */}
+                    {flash.success && (
+                        <div className="mb-4 text-green-600 dark:text-green-400">
+                            {flash.success}
+                        </div>
+                    )}
+                    {flash.error && (
+                        <div className="mb-4 text-red-600 dark:text-red-400">
+                            {flash.error}
+                        </div>
+                    )}
+
+                    <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
-                                <th scope="col" class="px-6 py-3">
+                                <th scope="col" className="px-6 py-3">
                                     Image
                                 </th>
-                                <th scope="col" class="px-6 py-3">
+                                <th scope="col" className="px-6 py-3">
                                     Name
                                 </th>
-                                <th scope="col" class="px-6 py-3">
+                                <th scope="col" className="px-6 py-3">
                                     Price
                                 </th>
-                                <th scope="col" class="px-6 py-3">
+                                <th scope="col" className="px-6 py-3">
                                     Category
                                 </th>
-                                <th scope="col" class="px-6 py-3">
+                                <th scope="col" className="px-6 py-3">
                                     Size
                                 </th>
-                                <th scope="col" class="px-6 py-3">
+                                <th scope="col" className="px-6 py-3">
                                     Brand
                                 </th>
-                                <th scope="col" class="px-6 py-3">
+                                <th scope="col" className="px-6 py-3">
                                     Status
                                 </th>
-                                <th scope="col" class="px-6 py-3">
+                                <th scope="col" className="px-6 py-3">
                                     Stock
                                 </th>
-                                <th scope="col" class="px-6 py-3">
+                                <th scope="col" className="px-6 py-3">
                                     Aksi
                                 </th>
                             </tr>
@@ -151,28 +166,31 @@ export default function App({ datas }) {
                             {filteredData.map((data) => (
                                 <tr
                                     key={data.id}
-                                    class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                                    className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                                 >
-                                    {console.log(data)}
                                     <th
                                         scope="row"
-                                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                                        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                                     >
                                         <img
-                                            src={data.image}
-                                            alt="/storage/images/logo-dashboard.png"
+                                            src={
+                                                data.first_image.images_link ??
+                                                ""
+                                            }
+                                            alt={data.name + " image"}
+                                            width={100}
                                         />
                                     </th>
-                                    <td class="px-6 py-4">{data.name}</td>
-                                    <td class="px-6 py-4">{data.price}</td>
-                                    <td class="px-6 py-4">
+                                    <td className="px-6 py-4">{data.name}</td>
+                                    <td className="px-6 py-4">{data.price}</td>
+                                    <td className="px-6 py-4">
                                         {data.category_name}
                                     </td>
-                                    <td class="px-6 py-4">{data.size}</td>
-                                    <td class="px-6 py-4">{data.brand}</td>
-                                    <td class="px-6 py-4">{data.status}</td>
-                                    <td class="px-6 py-4">{data.stock}</td>
-                                    <td class="px-6 py-4 text-right">
+                                    <td className="px-6 py-4">{data.size}</td>
+                                    <td className="px-6 py-4">{data.brand}</td>
+                                    <td className="px-6 py-4">{data.status}</td>
+                                    <td className="px-6 py-4">{data.stock}</td>
+                                    <td className="px-6 py-4 text-right">
                                         <div className="flex gap-3 items-center">
                                             <Link
                                                 href={route(
@@ -180,24 +198,24 @@ export default function App({ datas }) {
                                                     data.id
                                                 )}
                                                 type="button"
-                                                class="px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 flex gap-2 items-center"
+                                                className="px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 flex gap-2 items-center"
                                             >
                                                 <svg
                                                     xmlns="http://www.w3.org/2000/svg"
                                                     fill="none"
                                                     viewBox="0 0 24 24"
-                                                    stroke-width="1.5"
+                                                    strokeWidth="1.5"
                                                     stroke="currentColor"
-                                                    class="size-6"
+                                                    className="size-6"
                                                 >
                                                     <path
-                                                        stroke-linecap="round"
-                                                        stroke-linejoin="round"
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
                                                         d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
                                                     />
                                                     <path
-                                                        stroke-linecap="round"
-                                                        stroke-linejoin="round"
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
                                                         d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
                                                     />
                                                 </svg>
@@ -209,7 +227,7 @@ export default function App({ datas }) {
                                                     data.id
                                                 )}
                                                 type="button"
-                                                class="px-3 py-2 text-sm font-medium text-center text-white bg-yellow-700 rounded-lg hover:bg-yellow-800 focus:ring-4 focus:outline-none focus:ring-yellow-300 dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800 flex gap-2 items-center"
+                                                className="px-3 py-2 text-sm font-medium text-center text-white bg-yellow-700 rounded-lg hover:bg-yellow-800 focus:ring-4 focus:outline-none focus:ring-yellow-300 dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800 flex gap-2 items-center"
                                             >
                                                 <svg
                                                     xmlns="http://www.w3.org/2000/svg"
@@ -232,19 +250,19 @@ export default function App({ datas }) {
                                                     handleDelete(e, data.id)
                                                 }
                                                 type="button"
-                                                class="px-3 py-2 text-sm font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800 flex gap-2 items-center"
+                                                className="px-3 py-2 text-sm font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800 flex gap-2 items-center"
                                             >
                                                 <svg
                                                     xmlns="http://www.w3.org/2000/svg"
                                                     fill="none"
                                                     viewBox="0 0 24 24"
-                                                    stroke-width="1.5"
+                                                    strokeWidth="1.5"
                                                     stroke="currentColor"
-                                                    class="size-6"
+                                                    className="size-6"
                                                 >
                                                     <path
-                                                        stroke-linecap="round"
-                                                        stroke-linejoin="round"
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
                                                         d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
                                                     />
                                                 </svg>

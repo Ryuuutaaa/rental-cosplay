@@ -2,39 +2,39 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, useForm, usePage } from "@inertiajs/react";
 import { useState } from "react";
 
-export default function App({ categories, sizes }) {
-    const [images, setImages] = useState([]);
-
-    const category = categories.map((category) => category.name);
+export default function App({ categories, sizes, cosrent }) {
     const size = sizes.map((size) => size);
     const { flash = {}, errors: pageErrors = {} } = usePage().props;
+
+    console.log(flash);
+
+    // Tambahkan images ke dalam useForm initial data
     const { data, setData, post, processing, errors, reset } = useForm({
         name: "",
         price: "",
         category_id: "",
+        cosrent_id: cosrent.id,
         size: "",
         brand: "",
-        status: "",
         description: "",
-        image: "",
+        images: [], // Inisialisasi images di form data
     });
 
+    // State untuk preview images
+    const [previewImages, setPreviewImages] = useState([]);
+
     const handleImageChange = (event) => {
-        const files = Array.from(
-            event.target.files || event.dataTransfer.files
-        );
-        const imagePreviews = files.map((file) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
+        const files = Array.from(event.target.files);
 
-            return new Promise((resolve) => {
-                reader.onload = (e) => resolve(e.target.result);
-            });
-        });
+        // Buat preview images
+        const imageData = files.map((file) => ({
+            preview: URL.createObjectURL(file),
+            file,
+        }));
+        setPreviewImages((prev) => [...prev, ...imageData]);
 
-        Promise.all(imagePreviews).then((previews) =>
-            setImages((prev) => [...prev, ...previews])
-        );
+        // Set files ke form data
+        setData("images", files);
     };
 
     const handleDragOver = (event) => {
@@ -50,13 +50,30 @@ export default function App({ categories, sizes }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        post(route("cosrent.costum.store"){
-            onSuccess: () => {
-            reset(); // Reset form state
-            setImages([]); // Clear uploaded images
-        },
-        });
+
+        post(
+            route("cosrent.costum.store"),
+            {
+                _method: "POST",
+                ...data,
+                images: data.images,
+            },
+            {
+                forceFormData: true,
+                preserveScroll: true,
+                preserveState: true,
+                onSuccess: () => {
+                    reset();
+                    setPreviewImages([]);
+                },
+                onError: (errors) => {
+                    console.error(errors);
+                },
+            }
+        );
     };
+
+    console.log(errors);
 
     return (
         <AuthenticatedLayout
@@ -86,12 +103,14 @@ export default function App({ categories, sizes }) {
                 )}
 
                 <form
-                    id="productForm"
+                    id="costumeForm"
                     onSubmit={(e) => {
                         e.preventDefault();
                         handleSubmit(e);
                     }}
                     className="space-y-8"
+                    encType="multipart/form-data"
+                    method="post"
                 >
                     {/* Grid Layout for Inputs */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -119,17 +138,17 @@ export default function App({ categories, sizes }) {
                         {/* Category */}
                         <div>
                             <label
-                                htmlFor="category"
+                                htmlFor="category_id"
                                 className="block text-sm font-medium text-gray-200"
                             >
                                 Category
                             </label>
                             <select
-                                id="category"
-                                name="category"
-                                value={data.category}
+                                id="category_id"
+                                name="category_id"
+                                value={data.category_id}
                                 onChange={(e) =>
-                                    setData("category", e.target.value)
+                                    setData("category_id", e.target.value)
                                 }
                                 required
                                 className="mt-1 block w-full border-gray-600 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-700 text-gray-200 placeholder-gray-400"
@@ -137,9 +156,12 @@ export default function App({ categories, sizes }) {
                                 <option value="">
                                     Select Category Costume
                                 </option>
-                                {category.map((category) => (
-                                    <option key={category} value={category}>
-                                        {category}
+                                {categories.map((category) => (
+                                    <option
+                                        key={category.id}
+                                        value={category.id}
+                                    >
+                                        {category.name}
                                     </option>
                                 ))}
                             </select>
@@ -201,7 +223,6 @@ export default function App({ categories, sizes }) {
                     </div>
 
                     {/* brand */}
-
                     <div>
                         <label
                             htmlFor="brand"
@@ -268,23 +289,21 @@ export default function App({ categories, sizes }) {
                             <input
                                 type="file"
                                 id="image"
-                                name="image"
+                                name="images[]"
                                 multiple
                                 accept="image/*"
                                 className="hidden"
-                                value={data.image}
                                 onChange={handleImageChange}
-                                required
                             />
                         </div>
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-4">
-                            {images.map((src, index) => (
+                            {previewImages.map((image, index) => (
                                 <div
                                     key={index}
-                                    className="w-full h-full  rounded-lg shadow-md flex items-center justify-center overflow-hidden"
+                                    className="w-full h-full rounded-lg shadow-md flex items-center justify-center overflow-hidden"
                                 >
                                     <img
-                                        src={src}
+                                        src={image.preview}
                                         alt={`preview-${index}`}
                                         className="object-cover w-full h-full"
                                     />

@@ -38,6 +38,30 @@ class HandleInertiaRequests extends Middleware
                 'success' => $request->session()->get('success'),
                 'error' => $request->session()->get('error'),
             ],
+            'max_file_size' => $this->getMaxFileUploadSize(),
         ];
+    }
+    protected function getMaxFileUploadSize()
+    {
+        return min(
+            $this->returnBytes(ini_get('upload_max_filesize')),
+            $this->returnBytes(ini_get('post_max_size'))
+        );
+    }
+
+    protected function returnBytes($val)
+    {
+        $val = trim($val);
+        $last = strtolower($val[strlen($val) - 1]);
+        $val = (int)$val;
+        switch ($last) {
+            case 'g':
+                $val *= 1024;
+            case 'm':
+                $val *= 1024;
+            case 'k':
+                $val *= 1024;
+        }
+        return $val;
     }
 }
