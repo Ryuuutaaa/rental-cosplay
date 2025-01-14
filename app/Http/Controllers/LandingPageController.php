@@ -17,20 +17,19 @@ class LandingPageController extends Controller
             abort(403, 'Unauthorized access');
         }
 
-        $costume = Costum::with(['category', 'images_of_costum' => function ($query) {
-            $query->select('id', 'costum_id', 'images_link');
-            $query->orderBy('id', 'asc');
-        }])
-            ->where('id', $id)
-            ->get()
-            ->map(function ($image) {
-                $image->images_of_costum->map(function ($item) {
-                    $item->images_link = Storage::url('public/' . $item->images_link);
-                    return $item;
-                });
-                return $image;
-            })
+        $costume = Costum::where('id', "=", $id)
+            ->with(['category', 'images_of_costum' => function ($query) {
+                $query->select('id', 'costum_id', 'images_link');
+                $query->orderBy('id', 'asc');
+            }])
+            ->with('cosrent')
             ->first();
+
+        $costume->images_of_costum->transform(function ($image) {
+            $image->images_link = Storage::url('public/' . $image->images_link);
+            return $image;
+        });
+
 
         if (!$costume) {
             abort(404, 'Costume not found');

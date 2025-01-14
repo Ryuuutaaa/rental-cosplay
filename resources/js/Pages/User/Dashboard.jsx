@@ -13,14 +13,14 @@ export default function Dashboard({ username, datas }) {
             <Head title="Dashboard" />
 
             <div className="p-12">
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                     {datas.map((costume) => (
                         <a
                             key={costume.id}
                             href={route("user.detailCostume", {
                                 id: costume.id,
                             })}
-                            className="max-w-xs mx-auto bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden flex flex-col transform transition-transform duration-300 hover:scale-105 hover:shadow-lg hover:cursor-pointer"
+                            className="max-w-full mx-auto bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden flex flex-col transform transition-transform duration-300 hover:scale-105 hover:shadow-lg hover:cursor-pointer"
                         >
                             <img
                                 src={
@@ -28,7 +28,7 @@ export default function Dashboard({ username, datas }) {
                                     "https://via.placeholder.com/150"
                                 }
                                 alt={costume.name}
-                                className="object-cover"
+                                className="object-cover w-full h-[480px]"
                             />
                             <div className="p-4 flex-grow">
                                 <h3 className="text-lg font-bold text-white truncate">
@@ -46,7 +46,7 @@ export default function Dashboard({ username, datas }) {
                                         : "Unavailable"}
                                 </span>
                             </div>
-                            <div className="p-4 border-t flex items-center justify-between">
+                            <div className="p-4 border-t flex items-center justify-between gap-5">
                                 <span className="text-lg font-bold text-white">
                                     Rp {costume.price.toLocaleString()}
                                 </span>

@@ -23,6 +23,7 @@
     },
     "dependencies": {
         "@heroicons/react": "^2.2.0",
-        "@inertiajs/inertia": "^0.11.1"
+        "@inertiajs/inertia": "^0.11.1",
+        "swiper": "^11.2.1"
     }
 }
