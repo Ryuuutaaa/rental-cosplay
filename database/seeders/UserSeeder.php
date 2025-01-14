@@ -16,43 +16,43 @@ class UserSeeder extends Seeder
         $userRole = Role::where('name', 'user')->first();
 
         User::create([
-            'name' => 'Admin User',
+            'name' => 'Administrator Sistem',
             'email' => 'admin@example.com',
             'password' => Hash::make('password'),
             'role_id' => $adminRole->id,
         ]);
 
         User::create([
-            'name' => 'Cosrent User',
-            'email' => 'cosrent@example.com',
+            'name' => 'gungadya',
+            'email' => 'gungadya@gmail.com',
             'password' => Hash::make('password'),
             'role_id' => $cosrentRole->id,
         ]);
 
         User::create([
-            'name' => 'Cosrent User2',
-            'email' => 'cosrent2@example.com',
+            'name' => 'rikkayuu_rikkachu',
+            'email' => 'rikka@gmail.com',
             'password' => Hash::make('password'),
             'role_id' => $cosrentRole->id,
         ]);
 
         User::create([
-            'name' => 'Regular User',
-            'email' => 'user@example.com',
+            'name' => 'Palguna',
+            'email' => 'palguna@gmail.com',
             'password' => Hash::make('password'),
             'role_id' => $userRole->id,
         ]);
 
         User::create([
-            'name' => 'Regular User2',
-            'email' => 'user2@example.com',
+            'name' => 'Rafi',
+            'email' => 'rafi@gmail.com',
             'password' => Hash::make('password'),
             'role_id' => $userRole->id,
         ]);
 
         User::create([
-            'name' => 'Regular User3',
-            'email' => 'user3@example.com',
+            'name' => 'Fufufafa',
+            'email' => 'fufufafa@gmail.com',
             'password' => Hash::make('password'),
             'role_id' => $userRole->id,
         ]);

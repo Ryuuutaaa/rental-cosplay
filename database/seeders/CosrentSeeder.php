@@ -14,16 +14,16 @@ class CosrentSeeder extends Seeder
     public function run(): void
     {
         Cosrent::create([
-            'cosrent_name' => 'Cosrent 1',
+            'cosrent_name' => 'gungadya_cosrent',
             'telp_number' => '08123456789',
-            'address' => 'Jl. Contoh, No. 123',
+            'address' => 'Jl. Tukad Buaji 23, Sesetan, Denpasar Selatan, Kota Denpasar, Bali 80225',
             'user_id' => 2,
         ]);
         
         Cosrent::create([
-            'cosrent_name' => 'Cosrent 2',
+            'cosrent_name' => 'rikkayuu_cosrent',
             'telp_number' => '08123456787',
-            'address' => 'Jl. Example, No. 125',
+            'address' => 'Jl. Maruti Gg.3 No.15 Pemecutan Kaja, Denpasar Utara',
             'user_id' => 3,
         ]);
     }
