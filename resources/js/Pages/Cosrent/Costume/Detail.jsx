@@ -2,8 +2,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link } from "@inertiajs/react";
 import { Inertia } from "@inertiajs/inertia";
 
-export default function Detail({ datas, path_images }) {
-    console.log(datas);
+export default function Detail({ datas }) {
     return (
         <AuthenticatedLayout
             header={
@@ -22,7 +21,6 @@ export default function Detail({ datas, path_images }) {
                                 Nama Kostum : {datas.name}
                             </p>
                             <p className="text-lg">
-                                {" "}
                                 Deskripsi Kostum : {datas.description}
                             </p>
                             <p className="text-lg"> Brand : {datas.brand}</p>

@@ -217,7 +217,29 @@ class CostumController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $costume = Costum::where('id', '=', $id)
+            ->with(['category', 'images_of_costum' => function ($query) {
+                $query->select('id', 'costum_id', 'images_link');
+                $query->orderBy('id', 'asc');
+            }])
+            ->first();
+
+        // Tambahkan URL lengkap untuk setiap gambar
+        $costume->images_of_costum->transform(function ($image) {
+            $image->images_link = Storage::url('public/' . $image->images_link);
+            return $image;
+        });
+
+        $categories = Category::all();
+        $cosrent = $this->getCosrentAccount();
+        $size = $this->sizes();
+
+        return Inertia::render("Cosrent/Costume/Edit", [
+            'datas' => $costume,
+            'categories' => $categories,
+            'sizes' => $size,
+            'cosrent' => $cosrent
+        ]);
     }
 
     /**
