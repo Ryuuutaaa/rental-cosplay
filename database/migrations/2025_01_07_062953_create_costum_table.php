@@ -30,7 +30,7 @@ return new class extends Migration
                 ->on('cosrent')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->enum('size', ['xs', 's', 'm', 'l', 'xl', 'xxl', 'other'])->default('other');
+            $table->enum('size', ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'OTHER'])->default('OTHER');
             $table->string('brand')->nullable();
             $table->enum('status', ['ready', 'rented'])->default('ready');
             $table->integer('stock')->default(1);
