@@ -173,7 +173,7 @@ export default function App({ datas }) {
                                                     : ""
                                             }
                                             alt={data.name + " image"}
-                                            width={100}
+                                            className="object-cover w-36 h-24"
                                         />
                                     </th>
                                     <td className="px-6 py-4">{data.name}</td>
