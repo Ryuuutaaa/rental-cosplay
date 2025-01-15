@@ -6,8 +6,6 @@ export default function App({ categories, sizes, cosrent }) {
     const size = sizes.map((size) => size);
     const { flash = {}, errors: pageErrors = {} } = usePage().props;
 
-    console.log(flash);
-
     // Tambahkan images ke dalam useForm initial data
     const { data, setData, post, processing, errors, reset } = useForm({
         name: "",
@@ -72,8 +70,6 @@ export default function App({ categories, sizes, cosrent }) {
             }
         );
     };
-
-    console.log(errors);
 
     return (
         <AuthenticatedLayout

@@ -1,14 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, useForm, usePage } from "@inertiajs/react";
 import Modal from "@/Components/Modal";
-import { router } from "@inertiajs/react";
+import { Inertia } from "@inertiajs/inertia";
 
 export default function Edit({ datas, categories, sizes, cosrent }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
     const [previewImages, setPreviewImages] = useState([]);
     const { flash = {}, errors: pageErrors = {} } = usePage().props;
+
+    console.log(flash);
 
     // Initialize form with existing data
     const { data, setData, post, processing, errors } = useForm({
@@ -18,16 +20,20 @@ export default function Edit({ datas, categories, sizes, cosrent }) {
         category_id: datas.category_id,
         size: datas.size,
         brand: datas.brand,
-        new_images: [],
-        _method: "PUT",
+        new_images: [], // For new images
+        _method: "PUT", // For Laravel method spoofing
     });
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        // Create FormData object
         const formData = new FormData();
 
+        // Append all form fields
         Object.keys(data).forEach((key) => {
             if (key === "new_images") {
+                // Append each new image
                 if (data.new_images) {
                     data.new_images.forEach((image) => {
                         formData.append("new_images[]", image);
@@ -38,6 +44,7 @@ export default function Edit({ datas, categories, sizes, cosrent }) {
             }
         });
 
+        // Post to the update route
         post(route("cosrent.costum.update", datas.id), formData, {
             preserveScroll: true,
             onSuccess: () => {
@@ -56,77 +63,52 @@ export default function Edit({ datas, categories, sizes, cosrent }) {
 
     const handleDeleteImage = async (imageId) => {
         try {
-            await router.delete(route("cosrent.costum.delete-image", imageId), {
-                preserveState: true,
-                preserveScroll: true,
-                onSuccess: () => {
-                    // Update the datas.images_of_costum state directly
-                    datas.images_of_costum = datas.images_of_costum.filter(
-                        (image) => image.id !== imageId
-                    );
+            const response = await Inertia.delete(
+                route("cosrent.costum.delete-image", imageId),
+                {
+                    onSuccess: () => {
+                        // Update state images_of_costum di parent data
+                        const updatedImages = datas.images_of_costum.filter(
+                            (img) => img.id !== imageId
+                        );
+                        datas.images_of_costum = updatedImages;
 
-                    // Clear selected image and close modal
-                    setSelectedImage(null);
-                    setIsModalOpen(false);
+                        // Hapus preview jika ada
+                        setPreviewImages((prevPreviews) =>
+                            prevPreviews.filter(
+                                (preview) => preview.id !== imageId
+                            )
+                        );
 
-                    // Reload the page data without full page refresh
-                    router.reload({
-                        only: ["datas"],
-                        preserveState: true,
-                        preserveScroll: true,
-                    });
-                },
-                onError: (errors) => {
-                    console.error("Error deleting image:", errors);
-                },
-            });
+                        // Tutup modal
+                        setIsModalOpen(false);
+                    },
+                    onError: (errors) => {
+                        console.error("Error deleting image:", errors);
+                    },
+                    preserveScroll: true,
+                    preserveState: true,
+                }
+            );
         } catch (error) {
             console.error("Error deleting image:", error);
         }
     };
 
     const handleNewImages = (files) => {
-        const newFiles = Array.from(files);
+        // Update form data with new images
+        setData("new_images", [...(data.new_images || []), ...files]);
 
-        // Create preview URLs with unique IDs
-        const newPreviews = newFiles.map((file, index) => ({
-            id: `preview-${Date.now()}-${index}`,
+        // Create preview URLs dengan ID
+        const newPreviews = files.map((file, index) => ({
+            id: `preview-${Date.now()}-${index}`, // Tambahkan ID unik
             preview: URL.createObjectURL(file),
-            file: file,
         }));
-
-        // Update preview images state
-        setPreviewImages((prevPreviews) => [...prevPreviews, ...newPreviews]);
-
-        // Update form data
-        setData("new_images", [...(data.new_images || []), ...newFiles]);
+        setPreviewImages([...previewImages, ...newPreviews]);
     };
 
-    const handleRemovePreview = (previewId) => {
-        // Find the index of the preview image in the previewImages array
-        const previewIndex = previewImages.findIndex(
-            (img) => img.id === previewId
-        );
-
-        if (previewIndex !== -1) {
-            // Create new array of preview images without the removed one
-            const updatedPreviews = previewImages.filter(
-                (img) => img.id !== previewId
-            );
-            setPreviewImages(updatedPreviews);
-
-            // Remove the corresponding file from form data
-            const updatedNewImages = [...data.new_images];
-            updatedNewImages.splice(previewIndex, 1);
-            setData("new_images", updatedNewImages);
-
-            // Cleanup object URL
-            URL.revokeObjectURL(previewImages[previewIndex].preview);
-        }
-    };
-
-    // Clean up preview URLs when component unmounts
-    React.useEffect(() => {
+    useEffect(() => {
+        // Cleanup function untuk membersihkan URL objek
         return () => {
             previewImages.forEach((image) => {
                 if (image.preview) {
@@ -134,7 +116,7 @@ export default function Edit({ datas, categories, sizes, cosrent }) {
                 }
             });
         };
-    }, []);
+    }, [previewImages]);
 
     return (
         <AuthenticatedLayout>
@@ -378,6 +360,7 @@ export default function Edit({ datas, categories, sizes, cosrent }) {
                                 </div>
 
                                 {/* New Images Preview */}
+                                {/* New Images Preview */}
                                 {previewImages.length > 0 && (
                                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-4">
                                         {previewImages.map((image) => (
@@ -392,13 +375,30 @@ export default function Edit({ datas, categories, sizes, cosrent }) {
                                                 />
                                                 <div
                                                     className="absolute top-0 right-0 p-1 cursor-pointer"
-                                                    onClick={() =>
-                                                        handleRemovePreview(
-                                                            image.id
-                                                        )
-                                                    }
+                                                    onClick={() => {
+                                                        // Hapus preview specific image
+                                                        setPreviewImages(
+                                                            (prevPreviews) =>
+                                                                prevPreviews.filter(
+                                                                    (prev) =>
+                                                                        prev.id !==
+                                                                        image.id
+                                                                )
+                                                        );
+                                                        // Hapus dari form data juga
+                                                        const newImages =
+                                                            data.new_images.filter(
+                                                                (_, idx) =>
+                                                                    `preview-${Date.now()}-${idx}` !==
+                                                                    image.id
+                                                            );
+                                                        setData(
+                                                            "new_images",
+                                                            newImages
+                                                        );
+                                                    }}
                                                 >
-                                                    <span className="bg-red-500 text-white rounded-full p-1 hover:bg-red-600">
+                                                    <span className="bg-red-500 text-white rounded-full p-1">
                                                         ×
                                                     </span>
                                                 </div>

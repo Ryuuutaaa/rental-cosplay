@@ -297,9 +297,9 @@ class CostumController extends Controller
             Storage::delete('public/' . $image->images_link);
             $image->delete();
 
-            return response()->json(['success' => true], 200);
+            return redirect()->back()->with('success', 'Image deleted successfully!');
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
