@@ -166,7 +166,9 @@ class CostumController extends Controller
                     $file_name = $costum->name . '-' . date('YmdHis') . '-' . Str::random(10) . '.' . $extension;
                     $path = "uploads/costumes";
 
-                    $file_path = $image->storeAs($path, $file_name, 'public');
+                    // $file_path = $image->storeAs($path, $file_name, 'public');
+                    $file_path = Storage::disk('public')->putFile($path, $image, 'public');
+
 
                     ImageOfCostum::create([
                         'costum_id' => $costum->id,
@@ -272,10 +274,9 @@ class CostumController extends Controller
                 $files = $request->file('new_images');
                 foreach ($files as $image) {
                     $extension = $image->getClientOriginalExtension();
-                    $file_name = $costume->name . '-' . date('YmdHis') . '-' . Str::random(10) . '.' . $extension;
                     $path = "uploads/costumes";
 
-                    $file_path = $image->storeAs($path, $file_name, 'public');
+                    $file_path = Storage::disk('public')->putFile($path, $image, 'public');
 
                     ImageOfCostum::create([
                         'costum_id' => $costume->id,
