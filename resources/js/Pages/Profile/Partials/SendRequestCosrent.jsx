@@ -1,6 +1,6 @@
 import { useForm } from "@inertiajs/react";
 
-const SendRequestCosrent = ({ className = "" }) => {
+const SendRequestCosrent = ({ className = "", status }) => {
     const { data, setData, post, processing, errors } = useForm({
         reason_to_be_cosrent: "",
     });
@@ -34,6 +34,7 @@ const SendRequestCosrent = ({ className = "" }) => {
                         type="text"
                         id="reason_to_be_cosrent"
                         value={data.reason_to_be_cosrent}
+                        disabled={status}
                         onChange={(e) =>
                             setData("reason_to_be_cosrent", e.target.value)
                         }
@@ -52,7 +53,11 @@ const SendRequestCosrent = ({ className = "" }) => {
                 <div className="flex justify-start">
                     <button
                         type="submit"
-                        className="inline-flex items-center px-4 py-2 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-black uppercase tracking-widest hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:bg-gray-100 dark:hover:bg-white dark:text-gray-600 dark:focus:ring-offset-gray-800"
+                        disabled={status}
+                        className={
+                            "inline-flex items-center px-4 py-2 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-black uppercase tracking-widest hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:bg-gray-100 dark:hover:bg-white dark:text-gray-600 dark:focus:ring-offset-gray-800" +
+                            (status ? " disabled:opacity-50" : "")
+                        }
                     >
                         {processing ? "Requesting..." : "Send Request"}
                     </button>

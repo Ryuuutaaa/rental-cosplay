@@ -10,6 +10,7 @@ export default function Edit({
     status,
     userRole,
     cosrent_account,
+    status_request_cosrent = false,
 }) {
     return (
         <AuthenticatedLayout
@@ -39,7 +40,10 @@ export default function Edit({
 
                     {userRole === "user" && (
                         <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8 dark:bg-gray-800">
-                            <SendRequestCosrent className="max-w-xl" />
+                            <SendRequestCosrent
+                                className="max-w-xl"
+                                status={status_request_cosrent}
+                            />
                         </div>
                     )}
 

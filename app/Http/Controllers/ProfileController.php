@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\RequestStatus;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\Cosrent;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\RequestCosrent;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 class ProfileController extends Controller
@@ -37,6 +39,17 @@ class ProfileController extends Controller
                 'status' => session('status'),
                 'userRole' => $userRole,
                 'cosrent_account' => $cosrent_account
+            ]);
+        }
+
+        $request_cosrent = RequestCosrent::where('user_id', auth()->user()->id)->orderBy('created_at', 'desc')->first();
+        if ($request_cosrent) {
+            $request_status = in_array($request_cosrent->status, [RequestStatus::Approved->value, RequestStatus::Rejected->value]) ? false : true;
+            return Inertia::render('Profile/Edit', [
+                'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
+                'status' => session('status'),
+                'userRole' => $userRole,
+                'status_request_cosrent' => $request_status
             ]);
         }
 
