@@ -82,7 +82,7 @@ export default function Dashboard({ username, datas }) {
             </div>
 
             <div className="p-10">
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
                     {datas.map((costume) => (
                         <Link
                             key={costume.id}
