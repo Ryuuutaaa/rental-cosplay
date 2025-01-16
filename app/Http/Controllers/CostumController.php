@@ -20,6 +20,7 @@ class CostumController extends Controller
     {
         $userRole = auth()->user()->role->name ?? null;
         if ($userRole !== 'cosrent') {
+            // return redirect('/');
             abort(403, 'Unauthorized access');
         }
     }

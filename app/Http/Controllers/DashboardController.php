@@ -18,7 +18,8 @@ class DashboardController extends Controller
     {
         $userRole = auth()->user()->role->name ?? null;
         if ($userRole !== 'admin') {
-            abort(403, 'Unauthorized access');
+            return redirect('/');
+            // abort(403, 'Unauthorized access');
         }
 
         $categories = Category::all()->count();
@@ -38,7 +39,9 @@ class DashboardController extends Controller
     {
         $userRole = auth()->user()->role->name ?? null;
         if ($userRole !== 'cosrent') {
-            abort(403, 'Unauthorized access');
+            return redirect('/');
+
+            // abort(403, 'Unauthorized access');
         }
 
         return Inertia::render('Cosrent/Dashboard', [
@@ -51,7 +54,8 @@ class DashboardController extends Controller
     {
         $userRole = auth()->user()->role->name ?? null;
         if ($userRole !== 'user') {
-            abort(403, 'Unauthorized access');
+            return redirect('/');
+            // abort(403, 'Unauthorized access');
         }
 
         $costume = Costum::with(['category', 'images_of_costum' => function ($query) {

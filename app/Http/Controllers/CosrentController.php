@@ -20,7 +20,9 @@ class CosrentController extends Controller
     {
         $userRole = auth()->user()->role->name ?? null;
         if ($userRole !== 'admin') {
-            abort(403, 'Unauthorized access');
+            redirect('/');
+
+            // abort(403, 'Unauthorized access');
         }
     }
 

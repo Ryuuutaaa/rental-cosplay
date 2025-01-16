@@ -3,8 +3,7 @@ import Dropdown from "@/Components/Dropdown";
 import NavLink from "@/Components/NavLink";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
 import { use, useState } from "react";
-import { Head, Link, usePage } from "@inertiajs/react";
-import { Inertia } from "@inertiajs/inertia";
+import { Head, Link, usePage, router } from "@inertiajs/react";
 
 export default function Cosrent({ datas = [], auth }) {
     const { flash = {}, errors: pageErrors = {} } = usePage().props;
@@ -14,7 +13,7 @@ export default function Cosrent({ datas = [], auth }) {
             return;
         }
 
-        Inertia.post(
+        router.post(
             route("admin.user.approve", id),
             {
                 status,
@@ -39,7 +38,7 @@ export default function Cosrent({ datas = [], auth }) {
             return;
         }
 
-        Inertia.post(
+        router.post(
             route("admin.user.approve", id),
             {
                 status,

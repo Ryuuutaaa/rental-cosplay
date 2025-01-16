@@ -99,7 +99,7 @@ export default function Create() {
                         </label>
                         <input
                             type="text"
-                            keyboardType="phone-pad"
+                            keyboardtype="phone-pad"
                             id="telp_number"
                             value={data.telp_number}
                             onChange={(e) =>

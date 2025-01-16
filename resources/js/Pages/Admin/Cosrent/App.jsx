@@ -1,7 +1,6 @@
 import NavLink from "@/Components/NavLink";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head, Link, usePage } from "@inertiajs/react";
-import { Inertia } from "@inertiajs/inertia";
+import { Head, Link, usePage, router } from "@inertiajs/react";
 import { useState, useEffect } from "react";
 
 export default function Cosrent({ datas = [] }) {
@@ -9,9 +8,12 @@ export default function Cosrent({ datas = [] }) {
     const [filteredData, setFilteredData] = useState(datas);
     const { flash = {}, errors: pageErrors = {} } = usePage().props;
 
-    const handleSubmit = (e, id) => {
+    const handleDelete = (e, id) => {
         e.preventDefault();
-        Inertia.delete(route("admin.cosrent.destroy", id));
+        if (confirm("Are you sure you want to delete this costume?")) {
+            router.delete(route("admin.cosrent.destroy", id));
+            window.location.reload();
+        }
     };
 
     useEffect(() => {
@@ -189,38 +191,16 @@ export default function Cosrent({ datas = [] }) {
                                         </Link>
 
                                         {/* Tombol Delete */}
-                                        <form
-                                            onSubmit={(e) =>
-                                                handleSubmit(e, data.id)
-                                            }
+
+                                        <button
+                                            type="button"
                                             className="text-red-600 hover:text-red-800 flex gap-2"
-                                            title="Delete"
+                                            onClick={(e) =>
+                                                handleDelete(e, data.id)
+                                            }
                                         >
-                                            <button
-                                                type="submit"
-                                                onClick={(e) => {
-                                                    const confirmDelete =
-                                                        window.confirm(
-                                                            "Are you sure you want to delete this data?"
-                                                        );
-                                                    if (confirmDelete) {
-                                                        e.currentTarget.form.dispatchEvent(
-                                                            new Event(
-                                                                "submit",
-                                                                {
-                                                                    bubbles: true,
-                                                                    cancelable: true,
-                                                                }
-                                                            )
-                                                        );
-                                                    } else {
-                                                        e.preventDefault();
-                                                    }
-                                                }}
-                                            >
-                                                Delete
-                                            </button>
-                                        </form>
+                                            Delete
+                                        </button>
                                     </td>
                                 </tr>
                             ))}

@@ -98,6 +98,14 @@ export default function AuthenticatedLayout({ header, children }) {
                                         >
                                             History Order
                                         </NavLink>
+                                        <NavLink
+                                            href={route("user.biodata")}
+                                            active={route().current(
+                                                "user.biodata"
+                                            )}
+                                        >
+                                            Biodata
+                                        </NavLink>
                                     </>
                                 )}
                             </div>

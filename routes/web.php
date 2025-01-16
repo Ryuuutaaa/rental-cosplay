@@ -1,17 +1,18 @@
 <?php
 
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\CosrentController;
-use App\Http\Controllers\CostumController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\HistoryController;
-use App\Http\Controllers\LandingPageController;
-use App\Http\Controllers\OrderListController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\UserController;
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Application;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\CostumController;
+use App\Http\Controllers\BiodataController;
+use App\Http\Controllers\CosrentController;
+use App\Http\Controllers\HistoryController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\OrderListController;
+use App\Http\Controllers\LandingPageController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -117,6 +118,9 @@ Route::middleware('auth')->group(function () {
 
         // history
         Route::get("/history", [HistoryController::class, 'index'])->name("user.history");
+
+        //biodata
+        Route::get("/biodata", [BiodataController::class, 'index'])->name("user.biodata");
     });
 
     // Routes Profile
