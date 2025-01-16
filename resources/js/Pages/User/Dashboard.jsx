@@ -97,7 +97,7 @@ export default function Dashboard({ username, datas }) {
                                     "https://via.placeholder.com/150"
                                 }
                                 alt={costume.name}
-                                className="object-cover w-full h-[480px]"
+                                className="object-cover max-w-full max-h-72"
                             />
                             <div className="p-4 flex-grow">
                                 <h3 className="text-lg font-bold text-white truncate">
