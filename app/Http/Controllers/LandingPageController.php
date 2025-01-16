@@ -39,4 +39,26 @@ class LandingPageController extends Controller
             'costume' => $costume
         ]);
     }
+
+    public function search(Request $request)
+    {
+        $costume = Costum::with(['category', 'images_of_costum' => function ($query) {
+            $query->select('id', 'costum_id', 'images_link');
+            $query->orderBy('id', 'asc');
+        }])->with('cosrent')
+            ->search(
+                keyword: $request->search,
+                columns: ['costum.name', 'costum.price', 'costum.size', 'costum.brand', 'costum.status'],
+            )
+            ->get()
+            ->map(function ($image) {
+                $image->images_of_costum->map(function ($item) {
+                    $item->images_link =  Storage::url('public/' . $item->images_link);
+                    return $item;
+                });
+                return $image;
+            });
+
+        return response()->json($costume, 200);
+    }
 }

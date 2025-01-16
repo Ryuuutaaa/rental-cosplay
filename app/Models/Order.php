@@ -18,6 +18,8 @@ class Order extends Model
         "costum_id",
         "user_id",
         "status",
+        "tanggal_mulai_rental",
+        "tanggal_selesai_rental",
         "bukti_pembayaran"
     ];
 

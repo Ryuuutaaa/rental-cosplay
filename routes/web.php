@@ -1,8 +1,10 @@
 <?php
 
 use Inertia\Inertia;
+use App\Models\Costum;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\RentController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CostumController;
@@ -16,13 +18,24 @@ use App\Http\Controllers\OrderListController;
 use App\Http\Controllers\LandingPageController;
 
 Route::get('/', function () {
+    $costume = Costum::with(['category', 'images_of_costum' => function ($query) {
+        $query->select('id', 'costum_id', 'images_link');
+        $query->orderBy('id', 'asc');
+    }])->with('cosrent')->get()
+        ->map(function ($image) {
+            $image->images_of_costum->map(function ($item) {
+                $item->images_link =  Storage::url('public/' . $item->images_link);
+                return $item;
+            });
+            return $image;
+        });
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
+        'datas' => $costume
     ]);
 });
+Route::get('/search', [LandingPageController::class, 'search'])->name('search');
 
 // Route Dashboard berdasarkan Role
 Route::middleware('auth')->group(function () {
@@ -127,8 +140,8 @@ Route::middleware('auth')->group(function () {
     });
 
     //rental(user & cosrent)
+    Route::get("/rental/{id}", [RentController::class, "formRent"])->name("rental.form");
     Route::post("/rental", [RentController::class, "store"])->name("rental.store");
-    // Route::get("/rental/{id}", [RentController::class, "show"])->name("rental.show");
 
     //biodata universal
     Route::post("/biodata", [BiodataController::class, "store"])->name("biodata.store");
