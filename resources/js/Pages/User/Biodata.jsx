@@ -50,6 +50,9 @@ export default function Biodata({ biodata = {} }) {
 
             router.post(route("biodata.update", biodata?.id), formData, {
                 forceFormData: true,
+                onError: (response) => {
+                    console.log("Error Response:", response);
+                },
                 onSuccess: () => {
                     reset();
                     setTimeout(() => {

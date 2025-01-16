@@ -10,36 +10,44 @@ use Illuminate\Support\Facades\Storage;
 
 class BiodataController extends Controller
 {
+    /**
+     * Tampilkan halaman biodata untuk role user.
+     */
     public function index()
     {
         $user = auth()->user();
-        $userRole = $user->role->name ?? null;
-        if ($userRole !== 'user') {
+        if ($user->role->name !== 'user') {
             abort(403, 'Unauthorized access');
         }
-        $biodata = Biodata::where('user_id', $user->id)->first() ?? null;
+
+        $biodata = Biodata::where('user_id', $user->id)->first();
         return Inertia::render('User/Biodata', [
             'biodata' => $biodata,
         ]);
     }
 
+    /**
+     * Tampilkan halaman biodata untuk role cosrent.
+     */
     public function indexCosrent()
     {
         $user = auth()->user();
-        $userRole = $user->role->name ?? null;
-        if ($userRole !== 'cosrent') {
+        if ($user->role->name !== 'cosrent') {
             abort(403, 'Unauthorized access');
         }
-        $biodata = Biodata::where('user_id', $user->id)->first() ?? null;
+
+        $biodata = Biodata::where('user_id', $user->id)->first();
         return Inertia::render('User/Biodata', [
             'biodata' => $biodata,
         ]);
     }
 
+    /**
+     * Simpan data biodata baru.
+     */
     public function store(Request $request)
     {
-        $request->validate([
-            'user_id' => 'required',
+        $validated = $request->validate([
             'phone_whatsapp' => 'required|numeric',
             'parents_phone' => 'required|numeric',
             'full_address' => 'required|string',
@@ -48,167 +56,101 @@ class BiodataController extends Controller
             'friends_social_media' => 'required|string',
             'ktp' => 'required|image|mimes:jpg,jpeg,png,bmp,svg,gif|max:2048',
             'selfie_with_ktp' => 'required|image|mimes:jpg,jpeg,png,bmp,svg,gif|max:2048',
-        ], [
-            'user_id.required' => 'User ID is required',
-            'phone_whatsapp.required' => 'Phone Whatsapp is required',
-            'phone_whatsapp.numeric' => 'Phone Whatsapp must be numeric',
-            'parents_phone.required' => 'Parents Phone is required',
-            'parents_phone.numeric' => 'Parents Phone must be numeric',
-            'full_address.required' => 'Full Address is required',
-            'full_address.string' => 'Full Address must be string',
-            'instagram.required' => 'Instagram is required',
-            'instagram.string' => 'Instagram must be string',
-            'tiktok.string' => 'Tiktok must be string',
-            'friends_social_media.required' => 'Friends Social Media is required',
-            'friends_social_media.string' => 'Friends Social Media must be string',
-            'ktp.required' => 'KTP is required',
-            'ktp.image' => 'KTP must be image',
-            'ktp.mimes' => 'KTP must be in jpg,jpeg,png,bmp,svg,gif format',
-            'ktp.max' => 'KTP must be less than 2MB',
-            'selfie_with_ktp.required' => 'Selfie with KTP is required',
-            'selfie_with_ktp.image' => 'Selfie with KTP must be image',
-            'selfie_with_ktp.mimes' => 'Selfie with KTP must be in jpg,jpeg,png,bmp,svg,gif format',
-            'selfie_with_ktp.max' => 'Selfie with KTP must be less than 2MB',
         ]);
 
         $user = auth()->user();
-        $request_user_id = (int) $request->user_id;
-        if ($request_user_id === $user->id) {
-            if ($request->hasFile('ktp') && $request->hasFile('selfie_with_ktp')) {
-                // Upload KTP
-                $ktp = $request->file('ktp');
-                $ktp_extension = $ktp->getClientOriginalExtension();
-                $ktp_file_name = $user->name . '-' . date('YmdHis') . '-' . Str::random(10) . '.' . $ktp_extension;
-                $ktp_path_saved = "uploads/biodata/ktp";
-                //proses upload
-                $ktp_path = $ktp->storeAs($ktp_path_saved, $ktp_file_name, 'public');
 
-                // Upload Selfie with KTP
-                $selfie_with_ktp = $request->file('selfie_with_ktp');
-                $selfie_with_ktp_extension = $selfie_with_ktp->getClientOriginalExtension();
-                $selfie_with_ktp_file_name = $user->name . '-' . date('YmdHis') . '-' . Str::random(10) . '.' . $selfie_with_ktp_extension;
-                $selfie_with_ktp_path_saved = "uploads/biodata/selfie";
-                //proses upload
-                $selfie_with_ktp_path = $selfie_with_ktp->storeAs($selfie_with_ktp_path_saved, $selfie_with_ktp_file_name, 'public');
+        // Proses upload file
+        $ktp_path = $this->uploadFile($request->file('ktp'), 'uploads/biodata/ktp', $user->name);
+        $selfie_with_ktp_path = $this->uploadFile($request->file('selfie_with_ktp'), 'uploads/biodata/selfie', $user->name);
 
-                $biodata = Biodata::create([
-                    'user_id' => $user->id,
-                    'phone_whatsapp' => $request->phone_whatsapp,
-                    'parents_phone' => $request->parents_phone,
-                    'full_address' => $request->full_address,
-                    'instagram' => $request->instagram,
-                    'tiktok' => $request->tiktok,
-                    'friends_social_media' => $request->friends_social_media,
-                    'ktp' => $ktp_path,
-                    'selfie_with_ktp' => $selfie_with_ktp_path,
-                ]);
+        // Simpan ke database
+        $biodata = Biodata::create(array_merge($validated, [
+            'user_id' => $user->id,
+            'ktp' => $ktp_path,
+            'selfie_with_ktp' => $selfie_with_ktp_path,
+        ]));
 
-                if ($biodata) {
-                    return redirect()->back()->with('success', 'Data berhasil disimpan');
-                }
-
-                return redirect()->back()->with('error', 'Data gagal disimpan');
-            }
-        }
-        return redirect()->back()->with('error', 'ijin akses tidak valid');
+        return $biodata
+            ? redirect()->back()->with('success', 'Data berhasil disimpan')
+            : redirect()->back()->with('error', 'Data gagal disimpan');
     }
 
-    public function update(Request $request, string $id)
+    /**
+     * Perbarui data biodata yang ada.
+     */
+    public function update(Request $request, $id)
     {
-        $request->validate([
-            'user_id' => 'required',
+        $biodata = Biodata::findOrFail($id);
+
+        $this->authorizeAccess($biodata);
+
+        $rules = [
             'phone_whatsapp' => 'required|numeric',
             'parents_phone' => 'required|numeric',
             'full_address' => 'required|string',
             'instagram' => 'required|string',
             'tiktok' => 'nullable|string',
             'friends_social_media' => 'required|string',
-            'ktp' => 'nullable|image|mimes:jpg,jpeg,png,bmp,svg,gif|max:2048',
-            'selfie_with_ktp' => 'nullable|image|mimes:jpg,jpeg,png,bmp,svg,gif|max:2048',
-        ], [
-            'user_id.required' => 'User ID is required',
-            'phone_whatsapp.required' => 'Phone Whatsapp is required',
-            'phone_whatsapp.numeric' => 'Phone Whatsapp must be numeric',
-            'parents_phone.required' => 'Parents Phone is required',
-            'parents_phone.numeric' => 'Parents Phone must be numeric',
-            'full_address.required' => 'Full Address is required',
-            'full_address.string' => 'Full Address must be string',
-            'instagram.required' => 'Instagram is required',
-            'instagram.string' => 'Instagram must be string',
-            'tiktok.string' => 'Tiktok must be string',
-            'friends_social_media.required' => 'Friends Social Media is required',
-            'friends_social_media.string' => 'Friends Social Media must be string',
-            'ktp.image' => 'KTP must be image',
-            'ktp.mimes' => 'KTP must be in jpg,jpeg,png,bmp,svg,gif format',
-            'ktp.max' => 'KTP must be less than 2MB',
-            'selfie_with_ktp.image' => 'Selfie with KTP must be image',
-            'selfie_with_ktp.mimes' => 'Selfie with KTP must be in jpg,jpeg,png,bmp,svg,gif format',
-            'selfie_with_ktp.max' => 'Selfie with KTP must be less than 2MB',
-        ]);
+        ];
 
-        $biodata = Biodata::find($id);
-        $user = auth()->user();
-        $request_user_id = (int) $request->user_id;
-
-        if ($request_user_id === $biodata->user_id) {
-
-            if (!$biodata) {
-                return redirect()->back()->with('error', 'Data tidak ditemukan');
-            }
-
-            // Persiapkan data untuk update
-            $updateData = [
-                'user_id' => $user->id,
-                'phone_whatsapp' => $request->phone_whatsapp,
-                'parents_phone' => $request->parents_phone,
-                'full_address' => $request->full_address,
-                'instagram' => $request->instagram,
-                'tiktok' => $request->tiktok,
-                'friends_social_media' => $request->friends_social_media,
-            ];
-
-            // Handle KTP update if new file is uploaded
-            if ($request->hasFile('ktp')) {
-                // Delete old file
-                if ($biodata->ktp) {
-                    Storage::disk('public')->delete($biodata->ktp);
-                }
-
-                // Upload new KTP
-                $ktp = $request->file('ktp');
-                $ktp_extension = $ktp->getClientOriginalExtension();
-                $ktp_file_name = $user->name . '-' . date('YmdHis') . '-' . Str::random(10) . '.' . $ktp_extension;
-                $ktp_path_saved = "uploads/biodata/ktp";
-                $ktp_path = $ktp->storeAs($ktp_path_saved, $ktp_file_name, 'public');
-
-                $updateData['ktp'] = $ktp_path;
-            }
-
-            // Handle Selfie update if new file is uploaded
-            if ($request->hasFile('selfie_with_ktp')) {
-                // Delete old file
-                if ($biodata->selfie_with_ktp) {
-                    Storage::disk('public')->delete($biodata->selfie_with_ktp);
-                }
-
-                // Upload new Selfie
-                $selfie_with_ktp = $request->file('selfie_with_ktp');
-                $selfie_with_ktp_extension = $selfie_with_ktp->getClientOriginalExtension();
-                $selfie_with_ktp_file_name = $user->name . '-' . date('YmdHis') . '-' . Str::random(10) . '.' . $selfie_with_ktp_extension;
-                $selfie_with_ktp_path_saved = "uploads/biodata/selfie";
-                $selfie_with_ktp_path = $selfie_with_ktp->storeAs($selfie_with_ktp_path_saved, $selfie_with_ktp_file_name, 'public');
-
-                $updateData['selfie_with_ktp'] = $selfie_with_ktp_path;
-            }
-
-            // Update biodata
-            if ($biodata->update($updateData)) {
-                return redirect()->back()->with('success', 'Data berhasil diperbarui');
-            }
-
-            return redirect()->back()->with('error', 'Data gagal diperbarui');
+        if ($request->hasFile('ktp')) {
+            $rules['ktp'] = 'nullable|image|mimes:jpg,jpeg,png,bmp,svg,gif|max:2048';
+        } else {
+            $rules['ktp'] = 'nullable|string';
         }
 
-        return redirect()->back()->with('error', 'ijin akses tidak valid');
+        if ($request->hasFile('selfie_with_ktp')) {
+            $rules['selfie_with_ktp'] = 'nullable|image|mimes:jpg,jpeg,png,bmp,svg,gif|max:2048';
+        } else {
+            $rules['selfie_with_ktp'] = 'nullable|string';
+        }
+
+        $validated = $request->validate($rules);
+
+        // Proses update file
+        if ($request->hasFile('ktp')) {
+            $this->deleteFile($biodata->ktp);
+            $validated['ktp'] = $this->uploadFile($request->file('ktp'), 'uploads/biodata/ktp', auth()->user()->name);
+        }
+
+        if ($request->hasFile('selfie_with_ktp')) {
+            $this->deleteFile($biodata->selfie_with_ktp);
+            $validated['selfie_with_ktp'] = $this->uploadFile($request->file('selfie_with_ktp'), 'uploads/biodata/selfie', auth()->user()->name);
+        }
+
+        // Update ke database
+        return $biodata->update($validated)
+            ? redirect()->back()->with('success', 'Data berhasil diperbarui')
+            : redirect()->back()->with('error', 'Data gagal diperbarui');
+    }
+
+    /**
+     * Fungsi bantu untuk upload file.
+     */
+    private function uploadFile($file, $path, $prefix)
+    {
+        $filename = $prefix . '-' . now()->format('YmdHis') . '-' . Str::random(10) . '.' . $file->getClientOriginalExtension();
+        return $file->storeAs($path, $filename, 'public');
+    }
+
+    /**
+     * Fungsi bantu untuk menghapus file.
+     */
+    private function deleteFile($path)
+    {
+        if ($path && Storage::disk('public')->exists($path)) {
+            Storage::disk('public')->delete($path);
+        }
+    }
+
+    /**
+     * Fungsi untuk memvalidasi akses pengguna ke biodata.
+     */
+    private function authorizeAccess($biodata)
+    {
+        if (auth()->id() !== $biodata->user_id) {
+            abort(403, 'Unauthorized access');
+        }
     }
 }
