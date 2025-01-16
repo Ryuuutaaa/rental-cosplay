@@ -106,6 +106,9 @@ Route::middleware('auth')->group(function () {
 
         // order
         Route::get("/order", [OrderListController::class, 'index'])->name("cosrent.order");
+
+        //biodata
+        Route::get("/biodata", [BiodataController::class, 'indexCosrent'])->name("cosrent.biodata");
     });
 
 
@@ -122,6 +125,10 @@ Route::middleware('auth')->group(function () {
         //biodata
         Route::get("/biodata", [BiodataController::class, 'index'])->name("user.biodata");
     });
+
+    //biodata universal
+    Route::post("/biodata", [BiodataController::class, "store"])->name("biodata.store");
+    Route::put("/biodata/{id}", [BiodataController::class, "update"])->name("biodata.update");
 
     // Routes Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
