@@ -3,8 +3,7 @@ import InputLabel from "@/Components/InputLabel";
 import PrimaryButton from "@/Components/PrimaryButton";
 import TextInput from "@/Components/TextInput";
 import { Transition } from "@headlessui/react";
-import { Link, useForm, usePage } from "@inertiajs/react";
-import { Inertia } from "@inertiajs/inertia";
+import { Link, useForm, usePage, router } from "@inertiajs/react";
 import Cosrent from "@/Pages/Admin/Cosrent/App";
 
 export default function UpdateProfileInformation({
@@ -34,7 +33,7 @@ export default function UpdateProfileInformation({
 
     const submitCosrent = (e) => {
         e.preventDefault();
-        Inertia.post(route("profile.cosrent.update"), data, {
+        router.post(route("profile.cosrent.update"), data, {
             preserveScroll: true,
             onSuccess: () => {
                 recentlySuccessful(true);

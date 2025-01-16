@@ -1,14 +1,13 @@
 import NavLink from "@/Components/NavLink";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head, Link, usePage } from "@inertiajs/react";
-import { Inertia } from "@inertiajs/inertia";
+import { Head, Link, usePage, router } from "@inertiajs/react";
 
 export default function Category({ datas = [] }) {
     const { flash = {}, errors: pageErrors = {} } = usePage().props;
 
     const handleSubmit = (e, id) => {
         e.preventDefault();
-        Inertia.delete(route("admin.category.destroy", id));
+        router.delete(route("admin.category.destroy", id));
     };
 
     return (

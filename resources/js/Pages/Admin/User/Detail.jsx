@@ -1,12 +1,11 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head, Link } from "@inertiajs/react";
-import { Inertia } from "@inertiajs/inertia";
+import { Head, Link, router } from "@inertiajs/react";
 
 export default function Detail({ datas }) {
     const handleBan = () => {
         const confirmBan = window.confirm("Are you sure to Banned this User?");
         if (confirmBan) {
-            Inertia.put(route("admin.user.banned", datas.id));
+            router.put(route("admin.user.banned", datas.id));
         }
     };
 
@@ -15,7 +14,7 @@ export default function Detail({ datas }) {
             "Are you sure to Unbanned this User?"
         );
         if (confirmUnban) {
-            Inertia.put(route("admin.user.unban", datas.id));
+            router.put(route("admin.user.unban", datas.id));
         }
     };
 
