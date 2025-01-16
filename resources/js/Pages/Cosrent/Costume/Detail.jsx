@@ -1,8 +1,8 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link } from "@inertiajs/react";
-import { Inertia } from "@inertiajs/inertia";
 import Modal from "@/Components/Modal";
 import { useState } from "react";
+import { router } from "@inertiajs/react";
 
 export default function Detail({ datas }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -11,7 +11,7 @@ export default function Detail({ datas }) {
     const handleDelete = (e, id) => {
         e.preventDefault();
         if (confirm("Are you sure you want to delete this costume?")) {
-            Inertia.delete(route("cosrent.costum.destroy", id));
+            router.delete(route("cosrent.costum.destroy", id));
         }
     };
 
@@ -97,11 +97,11 @@ export default function Detail({ datas }) {
                                         </p>
                                     </div>
                                     <div
-                                        className={`bg-${
+                                        className={
                                             datas.status === "ready"
-                                                ? "green"
-                                                : "gray"
-                                        }-700 p-4 rounded-lg`}
+                                                ? "bg-green-700 p-4 rounded-lg"
+                                                : "bg-gray-700 p-4 rounded-lg"
+                                        }
                                     >
                                         <span className="text-sm text-gray-400">
                                             Status

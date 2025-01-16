@@ -41,6 +41,7 @@ class CostumController extends Controller
             ->join('category', 'costum.category_id', '=', 'category.id')
             ->select('costum.*', 'category.name as category_name')
             ->with('firstImage')
+            ->orderBy('id', 'desc')
             ->search(
                 keyword: $request->search,
                 columns: ['costum.name', 'price', 'category.name', 'size', 'brand', 'status'],
@@ -64,6 +65,7 @@ class CostumController extends Controller
             ->join('category', 'costum.category_id', '=', 'category.id')
             ->select('costum.*', 'category.name as category_name')
             ->with('firstImage')
+            ->orderBy('id', 'desc')
             ->get()
             ->map(function ($item) {
                 if ($item->firstImage) {
@@ -311,16 +313,15 @@ class CostumController extends Controller
         $costum_image = ImageOfCostum::where('costum_id', '=', $id)->get();
         $costum = Costum::find($id);
 
-        foreach ($costum_image as $image) {
-            Storage::delete('public/' . $image->images_link);
-            $image->delete();
+        if ($costum) {
+            foreach ($costum_image as $image) {
+                Storage::delete('public/' . $image->images_link);
+                $image->delete();
+            }
+            $costum->delete();
+            return redirect()->route('cosrent.costum')->with('success', 'Costume deleted successfully!');
         }
 
-        if (!$costum) {
-            return redirect()->route('cosrent.costum')->with('error', 'Costume not found!');
-        }
-
-        $costum->delete();
-        return redirect()->route('cosrent.costum')->with('success', 'Costume deleted successfully!');
+        return redirect()->route('cosrent.costum')->with('error', 'Costume not found!');
     }
 }
