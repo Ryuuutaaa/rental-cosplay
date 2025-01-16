@@ -61,7 +61,7 @@ class DashboardController extends Controller
         $costume = Costum::with(['category', 'images_of_costum' => function ($query) {
             $query->select('id', 'costum_id', 'images_link');
             $query->orderBy('id', 'asc');
-        }])->get()
+        }])->with('cosrent')->get()
             ->map(function ($image) {
                 $image->images_of_costum->map(function ($item) {
                     $item->images_link =  Storage::url('public/' . $item->images_link);

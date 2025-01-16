@@ -3,6 +3,7 @@
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
+use App\Http\Controllers\RentController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CostumController;
 use App\Http\Controllers\BiodataController;
@@ -111,7 +112,6 @@ Route::middleware('auth')->group(function () {
         Route::get("/biodata", [BiodataController::class, 'indexCosrent'])->name("cosrent.biodata");
     });
 
-
     // Routes user
     Route::prefix('user')->group(function () {
 
@@ -125,6 +125,10 @@ Route::middleware('auth')->group(function () {
         //biodata
         Route::get("/biodata", [BiodataController::class, 'index'])->name("user.biodata");
     });
+
+    //rental(user & cosrent)
+    Route::post("/rental", [RentController::class, "store"])->name("rental.store");
+    // Route::get("/rental/{id}", [RentController::class, "show"])->name("rental.show");
 
     //biodata universal
     Route::post("/biodata", [BiodataController::class, "store"])->name("biodata.store");
