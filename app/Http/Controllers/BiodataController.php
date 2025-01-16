@@ -150,8 +150,6 @@ class BiodataController extends Controller
         $user = auth()->user();
         $request_user_id = (int) $request->user_id;
 
-        dd($biodata);
-
         if ($request_user_id === $biodata->user_id) {
 
             if (!$biodata) {

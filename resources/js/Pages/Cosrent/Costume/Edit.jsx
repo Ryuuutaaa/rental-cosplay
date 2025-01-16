@@ -38,7 +38,7 @@ export default function Edit({ datas, categories, sizes, cosrent }) {
             }
         });
 
-        post(route("cosrent.costum.update", datas.id), formData, {
+        router.post(route("cosrent.costum.update", datas.id), formData, {
             preserveScroll: true,
             onSuccess: () => {
                 setPreviewImages([]);
