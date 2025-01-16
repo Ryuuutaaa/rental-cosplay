@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\OrderStatus;
 use Illuminate\Database\Eloquent\Model;
 use Yogameleniawan\SearchSortEloquent\Traits\Sortable;
 use Yogameleniawan\SearchSortEloquent\Traits\Searchable;
@@ -15,13 +16,22 @@ class Order extends Model
     protected $fillable = [
         "cosrent_id",
         "costum_id",
-        "user_id"
+        "user_id",
+        "status",
+        "bukti_pembayaran"
     ];
 
     protected $guarded = [
         "created_at",
         "updated_at"
     ];
+
+    public function cast()
+    {
+        return [
+            "status" => OrderStatus::class
+        ];
+    }
 
     public function user()
     {
