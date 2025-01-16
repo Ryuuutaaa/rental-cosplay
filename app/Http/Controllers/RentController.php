@@ -6,7 +6,9 @@ use Inertia\Inertia;
 use App\Models\Order;
 use App\Models\Costum;
 use App\Models\Biodata;
+use App\Enums\OrderStatus;
 use Illuminate\Support\Str;
+use App\Enums\CostumeStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
@@ -83,7 +85,7 @@ class RentController extends Controller
 
         $order = Order::with('costum')->findOrFail($id);
 
-        if ($order->status !== 'pending') {
+        if ($order->status !== OrderStatus::PENDING->value) {
             abort(403, 'Pembayaran sudah dilakukan.');
         }
 
@@ -121,13 +123,13 @@ class RentController extends Controller
     {
         $order = Order::with('costum')->findOrFail($id);
 
-        if ($order->status !== 'pending') {
+        if ($order->status !== OrderStatus::PENDING->value) {
             return redirect()->back()->with('error', 'Order tidak valid.');
         }
 
-        $order->update(['status' => 'confirmed']);
+        $order->update(['status' => OrderStatus::CONFIRMED->value]);
 
-        $order->costum->update(['status' => 'rented']);
+        $order->costum->update(['status' => CostumeStatus::Rented->value]);
 
         return redirect()->route('orders.index')
             ->with('success', 'Order berhasil dikonfirmasi.');
@@ -136,7 +138,7 @@ class RentController extends Controller
     public function rejectOrder(Request $request, string $id)
     {
         $order = Order::findOrFail($id);
-        $order->update(['status' => 'rejected']);
+        $order->update(['status' => OrderStatus::REJECTED->value]);
 
         return redirect()->route('orders.index')
             ->with('success', 'Order berhasil ditolak.');

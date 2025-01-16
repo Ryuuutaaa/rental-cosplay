@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Models\Order;
+use Illuminate\Http\Request;
+
+use function Laravel\Prompts\select;
 
 class HistoryController extends Controller
 {
@@ -12,29 +15,21 @@ class HistoryController extends Controller
      */
     public function index()
     {
-
         $userRole = auth()->user()->role->name ?? null;
         if ($userRole !== 'user') {
             abort(403, 'Unauthorized access');
         }
 
-        return Inertia::render("User/History");
-    }
+        $order = Order::where('order.user_id', auth()->user()->id)
+            ->join('costum', 'costum.id', '=', 'order.costum_id')
+            ->join('cosrent', 'cosrent.id', '=', 'costum.cosrent_id')
+            ->select('costum.name as costume_name', 'cosrent.cosrent_name as cosrent_name', 'order.status', 'order.id')
+            ->orderBy('order.created_at', 'desc')
+            ->get();
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
+        return Inertia::render("User/History/App", [
+            "datas" => $order
+        ]);
     }
 
     /**
@@ -42,7 +37,18 @@ class HistoryController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $userRole = auth()->user()->role->name ?? null;
+        if ($userRole !== 'user') {
+            abort(403, 'Unauthorized access');
+        }
+
+        $order = Order::where('user_id', auth()->user()->id)->findOrFail($id)
+            ->with('costum', 'costum.cosrent', 'costum.images_of_costum', 'costum.category')
+            ->first();
+
+        return Inertia::render("User/History/Detail", [
+            "datas" => $order
+        ]);
     }
 
     /**

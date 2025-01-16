@@ -134,6 +134,7 @@ Route::middleware('auth')->group(function () {
 
         // history
         Route::get("/history", [HistoryController::class, 'index'])->name("user.history");
+        Route::get("/history/{id}", [HistoryController::class, 'show'])->name("user.history.detail");
 
         //biodata
         Route::get("/biodata", [BiodataController::class, 'index'])->name("user.biodata");
