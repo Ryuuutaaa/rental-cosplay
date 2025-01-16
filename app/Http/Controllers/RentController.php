@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use Inertia\Inertia;
+use App\Models\Order;
 use App\Models\Costum;
 use App\Models\Biodata;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 
 class RentController extends Controller
@@ -43,6 +46,118 @@ class RentController extends Controller
         }
         if ($userRole === 'cosrent') {
             return redirect()->route('cosrent.biodata')->with('error', 'Silahkan isi biodata terlebih dahulu');
+        }
+    }
+    public function submitRent(Request $request, string $id)
+    {
+        $request->validate([
+            'tanggal_mulai_rental' => 'required|date|after:today',
+        ]);
+
+        $costume = Costum::findOrFail($id);
+        $user = auth()->user();
+        $tgl_mulai_rental = Carbon::parse($request->tanggal_mulai_rental);
+        $tgl_kembali_kostum = $tgl_mulai_rental->addDays(3)->format('Y-m-d');
+
+        $order = Order::create([
+            'cosrent_id' => $costume->cosrent_id,
+            'costum_id' => $costume->id,
+            'user_id' => $user->id,
+            'tanggal_mulai_rental' => $request->tanggal_mulai_rental,
+            'tanggal_kembali_kostum' => $tgl_kembali_kostum
+        ]);
+
+        if ($order) {
+            return redirect()->route('rent.payment', $order->id);
+        }
+
+        return redirect()->back()->with('error', 'Order gagal.');
+    }
+
+    public function paymentForm(string $id)
+    {
+        $userRole = auth()->user()->role->name ?? null;
+        if ($userRole === 'admin|cosrent|user') {
+            abort(403, 'Unauthorized access');
+        }
+
+        $order = Order::with('costum')->findOrFail($id);
+
+        if ($order->status !== 'pending') {
+            abort(403, 'Pembayaran sudah dilakukan.');
+        }
+
+        return Inertia::render('Rent/PaymentForm', [
+            'order' => $order,
+        ]);
+    }
+
+    public function submitPayment(Request $request, string $id)
+    {
+        $request->validate([
+            'bukti_pembayaran' => 'required|image|max:2048',
+        ]);
+
+        $order = Order::find($id);
+        if ($order) {
+            $path = $this->uploadFile($request->file('bukti_pembayaran'), 'uploads/bukti_bayar', auth()->user()->name);
+
+            $order->update([
+                'bukti_pembayaran' => $path,
+            ]);
+
+            if (auth()->user()->role->name === 'user') {
+                return redirect()->route('user.dashboard')->with('success', 'Order berhasil. Tunggu konfirmasi dari Cosrent yang menangani.');
+            }
+            if (auth()->user()->role->name === 'cosrent') {
+                return redirect()->route('cosrent.dashboard')->with('success', 'Order berhasil. Tunggu konfirmasi dari Cosrent yang menangani.');
+            }
+        }
+
+        return redirect()->back()->with('error', 'Order gagal.');
+    }
+
+    public function confirmOrder(Request $request, string $id)
+    {
+        $order = Order::with('costum')->findOrFail($id);
+
+        if ($order->status !== 'pending') {
+            return redirect()->back()->with('error', 'Order tidak valid.');
+        }
+
+        $order->update(['status' => 'confirmed']);
+
+        $order->costum->update(['status' => 'rented']);
+
+        return redirect()->route('orders.index')
+            ->with('success', 'Order berhasil dikonfirmasi.');
+    }
+
+    public function rejectOrder(Request $request, string $id)
+    {
+        $order = Order::findOrFail($id);
+        $order->update(['status' => 'rejected']);
+
+        return redirect()->route('orders.index')
+            ->with('success', 'Order berhasil ditolak.');
+    }
+
+    /**
+     * Fungsi bantu untuk upload file.
+     */
+    private function uploadFile($file, $path, $prefix)
+    {
+        $filename = $prefix . '-' . now()->format('YmdHis') . '-' . Str::random(10) . '.' . $file->getClientOriginalExtension();
+        return $file->storeAs($path, $filename, 'public');
+    }
+
+    /**
+     * Fungsi bantu untuk menghapus file.
+     */
+    private function deleteFile($path)
+    {
+        if ($path && Storage::disk('public')->exists($path)) {
+            Storage::disk('public')->delete($path);
         }
     }
 }

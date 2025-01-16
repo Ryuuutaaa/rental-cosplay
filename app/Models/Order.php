@@ -19,7 +19,7 @@ class Order extends Model
         "user_id",
         "status",
         "tanggal_mulai_rental",
-        "tanggal_selesai_rental",
+        "tanggal_kembali_kostum",
         "bukti_pembayaran"
     ];
 

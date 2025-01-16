@@ -1,8 +1,13 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, useForm, router, usePage } from "@inertiajs/react";
+import { useState } from "react";
+import Modal from "@/Components/Modal";
 
 export default function FormRent({ datas }) {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedImage, setSelectedImage] = useState(null);
     const user_id = usePage().props.auth.user.id;
+    const { flash = {}, errors = {} } = usePage().props;
     const { data, setData, post, processing } = useForm({
         user_id: user_id,
         costum_id: datas.id,
@@ -10,11 +15,15 @@ export default function FormRent({ datas }) {
         tanggal_mulai_rental: "",
     });
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        router.post(`/rent/${datas.id}`);
+    const handleImageClick = (image) => {
+        setSelectedImage(image);
+        setIsModalOpen(true);
     };
-    console.log(datas);
+
+    const handleSubmit = (e, id) => {
+        e.preventDefault();
+        router.post(route("rent.submit", id), data);
+    };
     return (
         <AuthenticatedLayout
             header={
@@ -25,31 +34,63 @@ export default function FormRent({ datas }) {
         >
             <Head title="Form Rent" />
 
-            <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <div className="min-h-screen bg-gray-900 text-gray-200 flex justify-center items-center">
+            <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 mt-8">
+                <div className="bg-gray-900 text-gray-200 flex justify-center items-center">
                     <div className="w-full max-w-4xl bg-gray-800 rounded-lg shadow-lg p-8">
                         <h1 className="text-2xl font-semibold text-center mb-6">
-                            Sewa Kostum - {datas.name}
+                            Rental Kostum - {datas.name}
                         </h1>
-                        <div className="mb-6">
-                            <img
-                                src={datas.images_of_costum[0]?.images_link}
-                                alt={datas.name}
-                                className="w-full h-64 object-cover rounded-lg"
-                            />
+                        <div className="mb-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                            {datas.images_of_costum?.map((image) => (
+                                <div
+                                    key={image.id}
+                                    className="relative group cursor-pointer overflow-hidden rounded-lg"
+                                    onClick={() => handleImageClick(image)}
+                                >
+                                    <img
+                                        src={image.images_link}
+                                        alt={datas.name}
+                                        className="w-full h-48 object-cover transform transition-transform duration-300 group-hover:scale-110"
+                                    />
+                                    <div className="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                        <span className="text-white text-sm">
+                                            Klik untuk memperbesar
+                                        </span>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
-                        <div className="mb-4">
-                            <p className="text-lg font-semibold">
-                                Detail Kostum:
-                            </p>
-                            <ul className="list-disc ml-5 mt-2 space-y-1">
-                                <li>Nama: {datas.name}</li>
-                                <li>Kategori: {datas.category?.name}</li>
-                                <li>Cosrent: {datas.cosrent?.name}</li>
-                            </ul>
+                        <div className="flex flex-wrap justify-between my-8">
+                            <div className="w-full md:w-1/2">
+                                <p className="text-lg font-semibold">
+                                    Detail Kostum:
+                                </p>
+                                <div className="list-disc ml-5 mt-2 space-y-1">
+                                    <p>
+                                        Cosrent: {datas.cosrent?.cosrent_name}
+                                    </p>
+                                    <p>Size : {datas.size}</p>
+                                    <p>Status : {datas.status}</p>
+                                    <p>
+                                        Harga:{" "}
+                                        {datas.price?.toLocaleString("id-ID", {
+                                            style: "currency",
+                                            currency: "IDR",
+                                        })}{" "}
+                                        / 3 Hari
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="w-full md:w-1/2">
+                                <div className="list-disc ml-5 mt-2 space-y-1">
+                                    <p>Kategori: {datas.category?.name}</p>
+                                    <p>Deskripsi: {datas.description}</p>
+                                </div>
+                            </div>
                         </div>
-                        <form onSubmit={handleSubmit}>
-                            <div className="mb-4">
+
+                        <form onSubmit={(e) => handleSubmit(e, datas.id)}>
+                            <div className="mb-4 dark:bg-gray-800 dark:border-gray-700 dark:text-white">
                                 <label
                                     htmlFor="tanggal_mulai_rental"
                                     className="block text-sm font-medium mb-2"
@@ -66,9 +107,14 @@ export default function FormRent({ datas }) {
                                             e.target.value
                                         )
                                     }
-                                    className="w-full bg-gray-700 text-gray-200 border border-gray-600 rounded-lg px-3 py-2 focus:ring focus:ring-blue-500"
+                                    className="w-full bg-gray-700 text-gray-200 border border-gray-600 rounded-lg px-3 py-2 focus:ring focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
                                     required
                                 />
+                                {errors?.tanggal_mulai_rental && (
+                                    <p className="text-red-500 text-xs mt-1">
+                                        {errors.tanggal_mulai_rental}
+                                    </p>
+                                )}
                             </div>
                             <button
                                 type="submit"
@@ -82,6 +128,19 @@ export default function FormRent({ datas }) {
                         </form>
                     </div>
                 </div>
+
+                {/* Image Modal */}
+                <Modal show={isModalOpen} onClose={() => setIsModalOpen(false)}>
+                    <div className="p-4">
+                        {selectedImage && (
+                            <img
+                                src={selectedImage.images_link}
+                                alt="Selected costume"
+                                className="w-full h-auto max-h-[80vh] object-contain rounded-lg"
+                            />
+                        )}
+                    </div>
+                </Modal>
             </div>
         </AuthenticatedLayout>
     );

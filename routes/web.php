@@ -141,7 +141,11 @@ Route::middleware('auth')->group(function () {
 
     //rental(user & cosrent)
     Route::get("/rental/{id}", [RentController::class, "formRent"])->name("rental.form");
-    Route::post("/rental", [RentController::class, "store"])->name("rental.store");
+    Route::post('/rent/{id}', [RentController::class, 'submitRent'])->name('rent.submit');
+    Route::get('/payment/{id}', [RentController::class, 'paymentForm'])->name('rent.payment');
+    Route::post('/payment/{id}', [RentController::class, 'submitPayment'])->name('rent.payment.submit');
+    Route::post('/order/{id}/confirm', [RentController::class, 'confirmOrder'])->name('order.confirm');
+    Route::post('/order/{id}/reject', [RentController::class, 'rejectOrder'])->name('order.reject');
 
     //biodata universal
     Route::post("/biodata", [BiodataController::class, "store"])->name("biodata.store");
