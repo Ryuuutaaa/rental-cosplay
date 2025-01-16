@@ -27,7 +27,7 @@ export default function DetailCostume({ costume }) {
                                         "https://via.placeholder.com/150"
                                     }
                                     alt={costume.name}
-                                    className="w-full h-[450px] object-cover rounded-lg shadow-lg"
+                                    className="w-full max-h-[500px] object-cover rounded-lg shadow-lg"
                                 />
                             </div>
 
