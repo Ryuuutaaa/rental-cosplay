@@ -144,9 +144,11 @@ export default function Welcome({ auth, datas }) {
                                                 </span>
                                             </div>
                                             <div className="p-4 border-t flex items-center justify-between gap-5">
-                                                <span className="text-lg font-bold text-white">
+                                                <span className="text-md font-bold text-white">
                                                     Rp{" "}
-                                                    {costume.price.toLocaleString()}
+                                                    {new Intl.NumberFormat(
+                                                        "id-ID"
+                                                    ).format(costume.price)}
                                                 </span>
                                                 <button
                                                     type="button"
@@ -354,14 +356,24 @@ export default function Welcome({ auth, datas }) {
                                                             Harga:{" "}
                                                             <span className="text-blue-500">
                                                                 Rp{" "}
-                                                                {selectedCostume.price.toLocaleString(
+                                                                {new Intl.NumberFormat(
                                                                     "id-ID",
                                                                     {
+                                                                        style: "currency",
+                                                                        currency:
+                                                                            "IDR",
                                                                         minimumFractionDigits: 0,
                                                                         maximumFractionDigits: 0,
-                                                                        useGrouping: true,
                                                                     }
-                                                                )}{" "}
+                                                                )
+                                                                    .format(
+                                                                        selectedCostume.price
+                                                                    )
+                                                                    .replace(
+                                                                        "Rp",
+                                                                        ""
+                                                                    )
+                                                                    .trim()}
                                                                 <span className="dark:text-gray-200">
                                                                     / 3 Hari
                                                                 </span>
