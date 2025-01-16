@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Order;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Models\Order;
+use App\Models\Cosrent;
+use Illuminate\Http\Request;
 
 class OrderListController extends Controller
 {
@@ -36,23 +37,17 @@ class OrderListController extends Controller
      */
     public function index()
     {
-        return Inertia::render("Cosrent/Orders/App");
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
+        $user = auth()->user();
+        $cosrent = Cosrent::where('user_id', $user->id)->first();
+        $order = Order::where('order.cosrent_id', $cosrent->id)
+            ->join('costum', 'costum.id', '=', 'order.costum_id')
+            ->join('cosrent', 'cosrent.id', '=', 'costum.cosrent_id')
+            ->select('costum.name as costume_name', 'cosrent.cosrent_name as cosrent_name', 'order.status', 'order.id')
+            ->orderBy('order.created_at', 'desc')
+            ->get();
+        return Inertia::render("Cosrent/Orders/App", [
+            "datas" => $order
+        ]);
     }
 
     /**
@@ -60,7 +55,13 @@ class OrderListController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $order = Order::find($id)
+            ->with('costum', 'costum.cosrent', 'costum.images_of_costum', 'costum.category', 'user', 'user.biodata')
+            ->first();
+
+        return Inertia::render("Cosrent/Orders/DetailOrder", [
+            "datas" => $order
+        ]);
     }
 
     /**

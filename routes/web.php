@@ -120,6 +120,7 @@ Route::middleware('auth')->group(function () {
 
         // order
         Route::get("/order", [OrderListController::class, 'index'])->name("cosrent.order");
+        Route::get("/order/{id}", [OrderListController::class, "show"])->name("cosrent.order.show");
 
         //biodata
         Route::get("/biodata", [BiodataController::class, 'indexCosrent'])->name("cosrent.biodata");
