@@ -374,7 +374,7 @@ export default function Welcome({ auth, datas }) {
                                                                         ""
                                                                     )
                                                                     .trim()}
-                                                                <span className="dark:text-gray-200">
+                                                                <span className="dark:text-gray-200 mx-1">
                                                                     / 3 Hari
                                                                 </span>
                                                             </span>
