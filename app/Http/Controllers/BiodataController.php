@@ -37,7 +37,7 @@ class BiodataController extends Controller
         }
 
         $biodata = Biodata::where('user_id', $user->id)->first();
-        return Inertia::render('User/Biodata', [
+        return Inertia::render('Cosrent/Biodata', [
             'biodata' => $biodata,
         ]);
     }

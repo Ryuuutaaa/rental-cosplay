@@ -35,6 +35,8 @@ return new class extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->enum('status', ['pending', 'confirmed', 'rejected', 'done'])->default('pending');
+            $table->date('tanggal_mulai_rental')->nullable();
+            $table->date('tanggal_kembali_kostum')->nullable();
             $table->string('bukti_pembayaran')->nullable();
             $table->timestamps();
         });

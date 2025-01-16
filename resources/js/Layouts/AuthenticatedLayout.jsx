@@ -85,6 +85,14 @@ export default function AuthenticatedLayout({ header, children }) {
                                         >
                                             Order List
                                         </NavLink>
+                                        <NavLink
+                                            href={route("cosrent.biodata")}
+                                            active={route().current(
+                                                "cosrent.biodata"
+                                            )}
+                                        >
+                                            Biodata
+                                        </NavLink>
                                     </>
                                 )}
 
