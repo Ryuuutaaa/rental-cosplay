@@ -26,7 +26,7 @@ class LandingPageController extends Controller
             ->first();
 
         $costume->images_of_costum->transform(function ($image) {
-            $image->images_link = Storage::url('public/' . $image->images_link);
+            $image->images_link = Storage::url('public/' . $image->images_link) ?? null;
             return $image;
         });
 
