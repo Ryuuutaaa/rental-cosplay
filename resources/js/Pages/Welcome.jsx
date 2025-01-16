@@ -48,15 +48,6 @@ export default function Welcome({ auth, datas }) {
                 <div className="relative flex min-h-screen flex-col items-center justify-center selection:bg-[#FF2D20] selection:text-white">
                     <div className="relative w-full max-w-2xl px-6 lg:max-w-7xl">
                         <header className="grid grid-cols-3 items-center gap-2 py-10 lg:grid-cols-3">
-                            <div className="flex lg:col-start-1 lg:justify-center">
-                                <input
-                                    type="text"
-                                    className="border border-gray-300 rounded-lg px-4 py-2 w-full text-black dark:text-white dark:bg-gray-800"
-                                    placeholder="Search Costume..."
-                                    value={search}
-                                    onChange={(e) => setSearch(e.target.value)}
-                                />
-                            </div>
                             <div className="flex lg:col-start-2 lg:justify-center">
                                 <ApplicationLogo className="w-40" />
                             </div>
@@ -88,6 +79,34 @@ export default function Welcome({ auth, datas }) {
                         </header>
 
                         <main className="mt-6">
+                            <div className="flex lg:col-start-1 lg:justify-center max-w-80 mb-10">
+                                <div className="relative w-full">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        strokeWidth={1.5}
+                                        stroke="currentColor"
+                                        className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+                                        />
+                                    </svg>
+                                    <input
+                                        type="text"
+                                        className="border border-gray-300 rounded-lg px-10 py-2 w-full text-black dark:text-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                        placeholder="Search Costume..."
+                                        value={search}
+                                        onChange={(e) =>
+                                            setSearch(e.target.value)
+                                        }
+                                    />
+                                </div>
+                            </div>
+
                             {filteredData.length > 0 ? (
                                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
                                     {filteredData.map((costume) => (
