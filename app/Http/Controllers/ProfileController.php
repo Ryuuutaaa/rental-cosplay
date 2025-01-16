@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\RequestStatus;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Models\Biodata;
 use App\Models\Cosrent;
+use App\Enums\RequestStatus;
 use Illuminate\Http\Request;
+use App\Models\RequestCosrent;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\ProfileUpdateRequest;
-use App\Models\RequestCosrent;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 class ProfileController extends Controller
@@ -117,6 +118,11 @@ class ProfileController extends Controller
         ]);
 
         $user = $request->user();
+
+        $biodata = Biodata::where('user_id', $user->id)->first();
+        if ($biodata) {
+            $biodata->delete();
+        }
 
         Auth::logout();
 
