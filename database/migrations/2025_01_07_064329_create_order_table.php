@@ -34,6 +34,8 @@ return new class extends Migration
                 ->on('users')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
+            $table->enum('status', ['pending', 'confirmed', 'rejected', 'done'])->default('pending');
+            $table->string('bukti_pembayaran')->nullable();
             $table->timestamps();
         });
     }
