@@ -35,24 +35,36 @@ export default function Biodata({ biodata = {} }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        // Buat FormData object
+        const formData = new FormData();
+
+        // Tambahkan semua field ke FormData
+        Object.keys(data).forEach((key) => {
+            formData.append(key, data[key]);
+        });
+
         if (biodata?.id) {
-            router.put(route("biodata.update", biodata?.id), {
-                _method: "PUT",
-                ...data,
+            // Tambahkan method PUT karena Laravel mengharapkan ini
+            formData.append("_method", "PUT");
+
+            router.post(route("biodata.update", biodata?.id), formData, {
+                forceFormData: true,
                 onSuccess: () => {
                     reset();
                     setTimeout(() => {
                         window.location.reload();
-                    }, 1500);
+                    }, 1000);
                 },
             });
         } else {
-            post(route("biodata.store"), {
+            post(route("biodata.store"), formData, {
+                forceFormData: true,
                 onSuccess: () => {
                     reset();
                     setTimeout(() => {
                         window.location.reload();
-                    }, 1500);
+                    }, 1000);
                 },
             });
         }
