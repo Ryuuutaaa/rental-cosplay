@@ -43,7 +43,8 @@ class HistoryController extends Controller
             abort(403, 'Unauthorized access');
         }
 
-        $order = Order::where('user_id', auth()->user()->id)->findOrFail($id)
+        $order = Order::where('order.user_id', auth()->user()->id)
+            ->where('order.id', $id)
             ->with('costum', 'costum.cosrent', 'costum.images_of_costum', 'costum.category')
             ->first();
         $order->costum->images_of_costum->transform(function ($image) {

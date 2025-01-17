@@ -122,11 +122,10 @@ class RentController extends Controller
 
     public function confirmOrder(string $id)
     {
-        dd($id);
         $order = Order::with('costum')->findOrFail($id);
 
         if ($order->status !== OrderStatus::PENDING->value) {
-            return redirect()->back()->with('error', 'Order tidak valid.');
+            return redirect()->route('cosrent.order')->with('error', 'Tidak dapat mengubah status order!');
         }
 
         try {
@@ -137,21 +136,24 @@ class RentController extends Controller
             $order->costum->update(['status' => CostumeStatus::Rented->value]);
 
             DB::commit();
-            return redirect()->route('orders.index')
+            return redirect()->route('cosrent.order')
                 ->with('success', 'Order berhasil dikonfirmasi.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Order gagal dikonfirmasi.');
+            return redirect()->route('cosrent.order')->with('error', 'Order gagal dikonfirmasi.');
         }
     }
 
     public function rejectOrder(string $id)
     {
         $order = Order::findOrFail($id);
+        if ($order->status !== OrderStatus::PENDING->value) {
+            return redirect()->route('cosrent.order')->with('error', 'Tidak dapat mengubah status order!');
+        }
         $order->update(['status' => OrderStatus::REJECTED->value]);
 
-        return redirect()->route('orders.index')
-            ->with('success', 'Order berhasil ditolak.');
+        return redirect()->route('cosrent.order')
+            ->with('success', 'Order berhasil di reject.');
     }
 
     /**

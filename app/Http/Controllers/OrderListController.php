@@ -6,6 +6,7 @@ use Inertia\Inertia;
 use App\Models\Order;
 use App\Models\Cosrent;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class OrderListController extends Controller
 {
@@ -55,9 +56,12 @@ class OrderListController extends Controller
      */
     public function show(string $id)
     {
-        $order = Order::find($id)
+        $order = Order::where('order.id', $id)
             ->with('costum', 'costum.cosrent', 'costum.images_of_costum', 'costum.category', 'user', 'user.biodata')
             ->first();
+        $order->bukti_pembayaran = $order->bukti_pembayaran ? Storage::url('public/' . $order->bukti_pembayaran) : null;
+        $order->user->biodata->ktp = $order->user->biodata->ktp ? Storage::url('public/' . $order->user->biodata->ktp) : null;
+        $order->user->biodata->selfie_with_ktp = $order->user->biodata->selfie_with_ktp ? Storage::url('public/' . $order->user->biodata->selfie_with_ktp) : null;
 
         return Inertia::render("Cosrent/Orders/DetailOrder", [
             "datas" => $order
