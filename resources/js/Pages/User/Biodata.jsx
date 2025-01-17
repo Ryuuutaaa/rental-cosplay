@@ -265,6 +265,12 @@ export default function Biodata({ biodata = {} }) {
                                             e.target.value
                                         )
                                     }
+                                    onInput={(e) => {
+                                        e.target.value = e.target.value.replace(
+                                            /[^0-9]/g,
+                                            ""
+                                        );
+                                    }}
                                     className="mt-1 block w-full border-gray-600 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-700 text-gray-200 placeholder-gray-400"
                                 />
                                 {errors.phone_whatsapp && (
@@ -290,6 +296,12 @@ export default function Biodata({ biodata = {} }) {
                                     onChange={(e) =>
                                         setData("parents_phone", e.target.value)
                                     }
+                                    onInput={(e) => {
+                                        e.target.value = e.target.value.replace(
+                                            /[^0-9]/g,
+                                            ""
+                                        );
+                                    }}
                                     className="mt-1 block w-full border-gray-600 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-gray-700 text-gray-200 placeholder-gray-400"
                                 />
                                 {errors.parents_phone && (
