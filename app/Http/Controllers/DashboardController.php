@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Mpdf\Mpdf;
-use App\Enums\OrderStatus;
+
 use Carbon\Carbon;
 use App\Models\User;
 use Inertia\Inertia;
@@ -11,6 +10,8 @@ use App\Models\Order;
 use App\Models\Costum;
 use App\Models\Cosrent;
 use App\Models\Category;
+use App\Enums\OrderStatus;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Controllers\Controller;
@@ -109,19 +110,29 @@ class DashboardController extends Controller
             ?? $confirmed_orders->first()?->costum->cosrent->cosrent_name
             ?? $done_orders->first()?->costum->cosrent->cosrent_name;
 
-        $timestamp = Carbon::now()->format('d-m-Y_H-i-s');
+        $cleanedCosrentName = Str::slug($cosrentName);
 
-        // return view('exports.cosrent-report', compact('pending_orders', 'confirmed_orders', 'done_orders', 'cosrentName'));
+        $timestamp = Carbon::now()->format('Y-m-d_H-i-s');
 
+        $filename = $cleanedCosrentName . '-' . $timestamp . '.pdf';
 
-        $html = view('exports.cosrent-report', compact('pending_orders', 'confirmed_orders', 'done_orders', 'cosrentName'))->render();
+        $pdf = Pdf::loadView('exports.cosrent-report', compact('pending_orders', 'confirmed_orders', 'done_orders', 'cosrentName'))
+            ->setPaper('A4', 'portrait')
+            ->setOptions([
+                'isHtml5ParserEnabled' => true,
+                'isRemoteEnabled' => true,
+                'isPhpEnabled' => true,
+                'isFontSubsettingEnabled' => true,
+                'defaultFont' => 'dejavu sans'
+            ]);
 
-        $mpdf = new Mpdf();
-        $mpdf->WriteHTML($html);
-        $filename = "{$cosrentName}-" . now()->format('d-m-Y_H-i-s') . ".pdf";
-
-        return response($mpdf->Output($filename, 'S'), 200)
-            ->header('Content-Type', 'application/pdf')
-            ->header('Content-Disposition', "attachment; filename=\"{$filename}\"");
+        return response($pdf->output(), 200)
+            ->withHeaders([
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+                'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                'Pragma' => 'no-cache',
+                'Expires' => '0'
+            ]);
     }
 }

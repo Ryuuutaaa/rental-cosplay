@@ -160,7 +160,7 @@ return [
          *
          * @see CPDF_Adapter::PAPER_SIZES for valid sizes ('letter', 'legal', 'A4', etc.)
          */
-        'default_paper_size' => 'a4',
+        'default_paper_size' => 'A4',
 
         /**
          * The default paper orientation.
@@ -178,7 +178,7 @@ return [
          *
          * @var string
          */
-        'default_font' => 'serif',
+        'default_font' => 'dejavu sans',
 
         /**
          * Image DPI setting
@@ -232,7 +232,7 @@ return [
          *
          * @var bool
          */
-        'enable_php' => false,
+        'enable_php' => true,
 
         /**
          * Rnable inline JavaScript
@@ -266,7 +266,7 @@ return [
          *
          * @var bool
          */
-        'enable_remote' => false,
+        'enable_remote' => true,
 
         /**
          * List of allowed remote hosts
