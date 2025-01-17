@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 use App\Enums\CostumeStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class RentController extends Controller
@@ -119,23 +120,32 @@ class RentController extends Controller
         return redirect()->back()->with('error', 'Order gagal.');
     }
 
-    public function confirmOrder(Request $request, string $id)
+    public function confirmOrder(string $id)
     {
+        dd($id);
         $order = Order::with('costum')->findOrFail($id);
 
         if ($order->status !== OrderStatus::PENDING->value) {
             return redirect()->back()->with('error', 'Order tidak valid.');
         }
 
-        $order->update(['status' => OrderStatus::CONFIRMED->value]);
+        try {
+            DB::beginTransaction();
 
-        $order->costum->update(['status' => CostumeStatus::Rented->value]);
+            $order->update(['status' => OrderStatus::CONFIRMED->value]);
 
-        return redirect()->route('orders.index')
-            ->with('success', 'Order berhasil dikonfirmasi.');
+            $order->costum->update(['status' => CostumeStatus::Rented->value]);
+
+            DB::commit();
+            return redirect()->route('orders.index')
+                ->with('success', 'Order berhasil dikonfirmasi.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Order gagal dikonfirmasi.');
+        }
     }
 
-    public function rejectOrder(Request $request, string $id)
+    public function rejectOrder(string $id)
     {
         $order = Order::findOrFail($id);
         $order->update(['status' => OrderStatus::REJECTED->value]);

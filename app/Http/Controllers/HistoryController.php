@@ -7,6 +7,7 @@ use App\Models\Order;
 use Illuminate\Http\Request;
 
 use function Laravel\Prompts\select;
+use Illuminate\Support\Facades\Storage;
 
 class HistoryController extends Controller
 {
@@ -45,6 +46,11 @@ class HistoryController extends Controller
         $order = Order::where('user_id', auth()->user()->id)->findOrFail($id)
             ->with('costum', 'costum.cosrent', 'costum.images_of_costum', 'costum.category')
             ->first();
+        $order->costum->images_of_costum->transform(function ($image) {
+            $image->images_link = Storage::url('public/' . $image->images_link) ?? null;
+            return $image;
+        });
+        $order->bukti_pembayaran = $order->bukti_pembayaran ? Storage::url('public/' . $order->bukti_pembayaran) : null;
 
         return Inertia::render("User/History/Detail", [
             "datas" => $order
