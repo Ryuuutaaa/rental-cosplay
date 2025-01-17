@@ -44,7 +44,7 @@ export default function Welcome({ auth, datas }) {
     return (
         <>
             <Head title="Rental Kostum Cosplay" />
-            <div className="bg-gray-50 text-black/50 dark:bg-black dark:text-white/50">
+            <div className="bg-gray-100 text-black/50 dark:bg-gray-900 dark:text-white/50">
                 <div className="relative flex min-h-screen flex-col items-center justify-center selection:bg-[#FF2D20] selection:text-white">
                     <div className="relative w-full max-w-2xl px-6 lg:max-w-7xl">
                         <header className="flex justify-between my-10 ">
@@ -97,8 +97,8 @@ export default function Welcome({ auth, datas }) {
                                     </svg>
                                     <input
                                         type="text"
-                                        className="border border-gray-300 rounded-lg px-10 py-2 w-full text-black dark:text-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                                        placeholder="Search Costume..."
+                                        className="border border-gray-300 rounded-lg px-10 py-2 w-96 max-w-lg text-black dark:text-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                        placeholder="Search Karakter, Anime, atau Game..."
                                         value={search}
                                         onChange={(e) =>
                                             setSearch(e.target.value)
@@ -469,9 +469,9 @@ export default function Welcome({ auth, datas }) {
                 </div>
             </div>
 
-            <footer class="py-8 bg-gray-800 text-white text-center">
-                <div class="container mx-auto">
-                    <p class="mb-4">
+            <footer className="py-8 bg-gray-800 text-white text-center">
+                <div className="container mx-auto">
+                    <p className="mb-4">
                         © 2025 Rental Cosplay. All rights reserved.
                     </p>
                     <div className="flex justify-center items-center gap-2">
@@ -479,12 +479,12 @@ export default function Welcome({ auth, datas }) {
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
                             fill="currentColor"
-                            class="size-6"
+                            className="size-6"
                         >
                             <path
-                                fill-rule="evenodd"
+                                fillRule="evenodd"
                                 d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z"
-                                clip-rule="evenodd"
+                                clipRule="evenodd"
                             />
                         </svg>
                         I Made Palguna Widiarsana
@@ -493,12 +493,12 @@ export default function Welcome({ auth, datas }) {
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
                             fill="currentColor"
-                            class="size-6"
+                            className="size-6"
                         >
                             <path
-                                fill-rule="evenodd"
+                                fillRule="evenodd"
                                 d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z"
-                                clip-rule="evenodd"
+                                clipRule="evenodd"
                             />
                         </svg>
                         Rafi Akmal Widikta
@@ -507,7 +507,7 @@ export default function Welcome({ auth, datas }) {
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
                             fill="currentColor"
-                            class="size-6"
+                            className="size-6"
                         >
                             <path d="M1.5 8.67v8.58a3 3 0 0 0 3 3h15a3 3 0 0 0 3-3V8.67l-8.928 5.493a3 3 0 0 1-3.144 0L1.5 8.67Z" />
                             <path d="M22.5 6.908V6.75a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3v.158l9.714 5.978a1.5 1.5 0 0 0 1.572 0L22.5 6.908Z" />
@@ -515,14 +515,14 @@ export default function Welcome({ auth, datas }) {
                         yamaguchiinterprise@gmail.com
                     </div>
 
-                    <div class="mt-4 flex justify-center space-x-6">
+                    <div className="mt-4 flex justify-center space-x-6">
                         <a
                             href="https://facebook.com"
-                            class="text-gray-400 hover:text-white"
+                            className="text-gray-400 hover:text-white"
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
-                                class="h-6 w-6"
+                                className="h-6 w-6"
                                 viewBox="0 0 24 24"
                                 fill="currentColor"
                             >
@@ -531,11 +531,11 @@ export default function Welcome({ auth, datas }) {
                         </a>
                         <a
                             href="https://twitter.com"
-                            class="text-gray-400 hover:text-white"
+                            className="text-gray-400 hover:text-white"
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
-                                class="h-6 w-6"
+                                className="h-6 w-6"
                                 viewBox="0 0 24 24"
                                 fill="currentColor"
                             >
@@ -544,11 +544,11 @@ export default function Welcome({ auth, datas }) {
                         </a>
                         <a
                             href="https://instagram.com"
-                            class="text-gray-400 hover:text-white"
+                            className="text-gray-400 hover:text-white"
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
-                                class="h-6 w-6"
+                                className="h-6 w-6"
                                 viewBox="0 0 24 24"
                                 fill="currentColor"
                             >
