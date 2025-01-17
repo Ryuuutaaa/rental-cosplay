@@ -2,13 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use Mpdf\Mpdf;
+use App\Enums\OrderStatus;
+use Carbon\Carbon;
 use App\Models\User;
 use Inertia\Inertia;
+use App\Models\Order;
+use App\Models\Costum;
 use App\Models\Cosrent;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Controllers\Controller;
-use App\Models\Costum;
 use Illuminate\Support\Facades\Storage;
 
 class DashboardController extends Controller
@@ -44,8 +49,11 @@ class DashboardController extends Controller
             // abort(403, 'Unauthorized access');
         }
 
+        $cosrent = Cosrent::where('user_id', auth()->user()->id)->first();
+
         return Inertia::render('Cosrent/Dashboard', [
             'username' => auth()->user()->name,
+            'cosrent' => $cosrent
         ]);
     }
 
@@ -74,5 +82,46 @@ class DashboardController extends Controller
             'username' => auth()->user()->name,
             'datas' => $costume
         ]);
+    }
+
+    public function exportCosrentReport(Request $request, $cosrent_id)
+    {
+        $pending_orders = Order::where('cosrent_id', '=', $cosrent_id)
+            ->with('costum', 'costum.cosrent', 'costum.category', 'user', 'user.biodata')
+            ->where('status', '=', OrderStatus::PENDING->value)
+            ->get();
+
+        $confirmed_orders = Order::where('cosrent_id', '=', $cosrent_id)
+            ->with('costum', 'costum.cosrent', 'costum.category', 'user', 'user.biodata')
+            ->where('status', '=', OrderStatus::CONFIRMED->value)
+            ->get();
+
+        $done_orders = Order::where('cosrent_id', '=', $cosrent_id)
+            ->with('costum', 'costum.cosrent', 'costum.category', 'user', 'user.biodata')
+            ->where('status', '=', OrderStatus::DONE->value)
+            ->get();
+
+        if ($pending_orders->isEmpty() && $confirmed_orders->isEmpty() && $done_orders->isEmpty()) {
+            return back()->with('error', 'Belum ada orderan.');
+        }
+
+        $cosrentName = $pending_orders->first()?->costum->cosrent->cosrent_name
+            ?? $confirmed_orders->first()?->costum->cosrent->cosrent_name
+            ?? $done_orders->first()?->costum->cosrent->cosrent_name;
+
+        $timestamp = Carbon::now()->format('d-m-Y_H-i-s');
+
+        // return view('exports.cosrent-report', compact('pending_orders', 'confirmed_orders', 'done_orders', 'cosrentName'));
+
+
+        $html = view('exports.cosrent-report', compact('pending_orders', 'confirmed_orders', 'done_orders', 'cosrentName'))->render();
+
+        $mpdf = new Mpdf();
+        $mpdf->WriteHTML($html);
+        $filename = "{$cosrentName}-" . now()->format('d-m-Y_H-i-s') . ".pdf";
+
+        return response($mpdf->Output($filename, 'S'), 200)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', "attachment; filename=\"{$filename}\"");
     }
 }

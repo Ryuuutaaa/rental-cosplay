@@ -43,7 +43,8 @@ class OrderListController extends Controller
         $order = Order::where('order.cosrent_id', $cosrent->id)
             ->join('costum', 'costum.id', '=', 'order.costum_id')
             ->join('cosrent', 'cosrent.id', '=', 'costum.cosrent_id')
-            ->select('costum.name as costume_name', 'cosrent.cosrent_name as cosrent_name', 'order.status', 'order.id')
+            ->join('users', 'users.id', '=', 'order.user_id')
+            ->select('costum.name as costume_name', 'cosrent.cosrent_name as cosrent_name', 'order.status', 'order.id', 'users.name as user_name')
             ->orderBy('order.created_at', 'desc')
             ->get();
         return Inertia::render("Cosrent/Orders/App", [

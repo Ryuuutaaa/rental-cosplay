@@ -13,6 +13,7 @@
         "laravel/octane": "^2.6",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
+        "mpdf/mpdf": "^8.2",
         "tightenco/ziggy": "^2.0",
         "yogameleniawan/search-sort-eloquent": "^1.2"
     },
