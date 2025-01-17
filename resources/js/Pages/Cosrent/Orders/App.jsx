@@ -79,7 +79,7 @@ export default function App({ datas }) {
                                 <div className="p-6 text-gray-900 dark:text-gray-100 text-left flex justify-between items-center relative">
                                     <div>
                                         <h2 className="text-xl font-semibold">
-                                            {data.cosrent_name}
+                                            {data.user_name}
                                         </h2>
                                         <p className="mt-2">
                                             {data.costume_name}

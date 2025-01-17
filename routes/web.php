@@ -124,6 +124,10 @@ Route::middleware('auth')->group(function () {
 
         //biodata
         Route::get("/biodata", [BiodataController::class, 'indexCosrent'])->name("cosrent.biodata");
+
+        //export pdf
+        Route::get('/cosrent/{cosrent_id}/export-pdf', [DashboardController::class, 'exportCosrentReport'])
+            ->name('cosrent.export-pdf');
     });
 
     // Routes user
