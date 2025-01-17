@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use App\Enums\CostumeSize;
 use App\Enums\CostumeStatus;
 use Illuminate\Database\Eloquent\Model;
@@ -30,6 +31,19 @@ class Costum extends Model
         "created_at",
         "updated_at",
     ];
+
+    public function getStatusAttribute($value)
+    {
+        if ($value === CostumeStatus::Rented->value && $this->tanggal_kembali_kostum) {
+            $threeDaysAgo = Carbon::now()->subDays(3);
+            if (Carbon::parse($this->tanggal_kembali_kostum)->lessThanOrEqualTo($threeDaysAgo)) {
+                $this->update(['status' => CostumeStatus::Ready->value]);
+                return 'ready';
+            }
+        }
+
+        return $value;
+    }
 
     public function cast()
     {
