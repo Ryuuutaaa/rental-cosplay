@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use Inertia\Inertia;
 use App\Models\Order;
-use Illuminate\Http\Request;
+use App\Enums\OrderStatus;
 
+use Illuminate\Http\Request;
 use function Laravel\Prompts\select;
 use Illuminate\Support\Facades\Storage;
 
@@ -52,6 +53,16 @@ class HistoryController extends Controller
             return $image;
         });
         $order->bukti_pembayaran = $order->bukti_pembayaran ? Storage::url('public/' . $order->bukti_pembayaran) : null;
+
+        if ($order->status === OrderStatus::AWAITING_PAYMENT->value) {
+            $deadline = $order->deadline_payment;
+            $now = now();
+            return Inertia::render("User/History/Detail", [
+                "datas" => $order,
+                "deadline" => $deadline,
+                "now" => $now
+            ]);
+        }
 
         return Inertia::render("User/History/Detail", [
             "datas" => $order

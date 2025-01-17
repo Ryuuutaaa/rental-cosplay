@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Inertia\Inertia;
 use App\Models\Order;
 use App\Models\Cosrent;
+use App\Enums\OrderStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -44,6 +45,7 @@ class OrderListController extends Controller
             ->join('costum', 'costum.id', '=', 'order.costum_id')
             ->join('cosrent', 'cosrent.id', '=', 'costum.cosrent_id')
             ->join('users', 'users.id', '=', 'order.user_id')
+            ->where('order.status', '!=', OrderStatus::AWAITING_PAYMENT->value)
             ->select('costum.name as costume_name', 'cosrent.cosrent_name as cosrent_name', 'order.status', 'order.id', 'users.name as user_name')
             ->orderBy('order.created_at', 'desc')
             ->get();

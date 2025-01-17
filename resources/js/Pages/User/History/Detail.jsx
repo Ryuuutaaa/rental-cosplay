@@ -1,5 +1,5 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head } from "@inertiajs/react";
+import { Head, Link, router } from "@inertiajs/react";
 
 export default function Detail({ datas }) {
     const {
@@ -9,6 +9,10 @@ export default function Detail({ datas }) {
         bukti_pembayaran,
         status,
     } = datas;
+
+    const handleLanjutkanPembayaran = () => {
+        router.get(route("rent.payment", datas.id));
+    };
 
     return (
         <AuthenticatedLayout
@@ -77,10 +81,16 @@ export default function Detail({ datas }) {
                                                 status === "pending"
                                                     ? "text-yellow-500"
                                                     : status === "confirmed"
-                                                    ? "text-blue-500"
-                                                    : status === "rejected"
-                                                    ? "text-red-500"
-                                                    : "text-green-500"
+                                                    ? "text-green-500"
+                                                    : status ===
+                                                      "awaiting_payment"
+                                                    ? "text-rose-300"
+                                                    : status ===
+                                                      "waiting_confirmation"
+                                                    ? "text-blue-600"
+                                                    : status === "done"
+                                                    ? "text-emerald-500"
+                                                    : "text-red-500"
                                             }
                                         >
                                             {status}
@@ -95,13 +105,13 @@ export default function Detail({ datas }) {
                                     </li>
                                     <li>
                                         Bukti Pembayaran:{" "}
-                                        <a
+                                        <Link
                                             href={bukti_pembayaran}
                                             target="_blank"
                                             className="text-blue-500 hover:underline"
                                         >
                                             Lihat Bukti
-                                        </a>
+                                        </Link>
                                     </li>
                                 </ul>
                             </div>
@@ -144,6 +154,21 @@ export default function Detail({ datas }) {
                                         ))}
                                 </div>
                             </div>
+
+                            {/* Deadline */}
+                            {datas.status === "awaiting_payment" && (
+                                <div className="mt-8">
+                                    <h3 className="text-xl font-semibold mb-4">
+                                        Lanjutkan Pembayaran
+                                    </h3>
+                                    <button
+                                        onClick={handleLanjutkanPembayaran}
+                                        className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
+                                    >
+                                        Lanjut Bayar
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

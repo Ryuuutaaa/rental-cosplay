@@ -71,7 +71,11 @@ export default function App({ datas }) {
                                         ? "bg-yellow-400 dark:bg-yellow-600"
                                         : data.status === "confirmed"
                                         ? "bg-sky-400 dark:bg-sky-600"
+                                        : data.status === "awaiting_payment"
+                                        ? "bg-gray-500 dark:bg-gray-700"
                                         : data.status === "rejected"
+                                        ? "bg-red-400 dark:bg-red-700"
+                                        : data.status === "canceled"
                                         ? "bg-red-400 dark:bg-red-700"
                                         : "bg-green-400 dark:bg-green-800"
                                 } transition duration-300`}
