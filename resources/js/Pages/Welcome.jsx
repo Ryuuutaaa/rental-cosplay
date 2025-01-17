@@ -47,7 +47,7 @@ export default function Welcome({ auth, datas }) {
             <div className="bg-gray-50 text-black/50 dark:bg-black dark:text-white/50">
                 <div className="relative flex min-h-screen flex-col items-center justify-center selection:bg-[#FF2D20] selection:text-white">
                     <div className="relative w-full max-w-2xl px-6 lg:max-w-7xl">
-                        <header className="grid grid-cols-3 items-center gap-2 py-10 lg:grid-cols-3">
+                        <header className="flex justify-between my-10 ">
                             <div className="flex lg:col-start-2 lg:justify-center">
                                 <ApplicationLogo className="w-40" />
                             </div>
@@ -79,7 +79,7 @@ export default function Welcome({ auth, datas }) {
                         </header>
 
                         <main className="mt-6">
-                            <div className="flex lg:col-start-1 lg:justify-center max-w-80 mb-10">
+                            <div className="flex lg:col-start-1 lg:justify-center max-w-80 mb-10 ms">
                                 <div className="relative w-full">
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
@@ -108,7 +108,7 @@ export default function Welcome({ auth, datas }) {
                             </div>
 
                             {filteredData.length > 0 ? (
-                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 mb-14">
                                     {filteredData.map((costume) => (
                                         <div
                                             key={costume.id}
@@ -203,10 +203,6 @@ export default function Welcome({ auth, datas }) {
                                 </div>
                             )}
                         </main>
-
-                        <footer className="py-16 text-center text-sm text-black dark:text-white/70">
-                            {/* Laravel v{laravelVersion} (PHP v{phpVersion}) */}
-                        </footer>
 
                         {/* modal detail */}
                         <Modal
@@ -472,6 +468,96 @@ export default function Welcome({ auth, datas }) {
                     </div>
                 </div>
             </div>
+
+            <footer class="py-8 bg-gray-800 text-white text-center">
+                <div class="container mx-auto">
+                    <p class="mb-4">
+                        © 2025 Rental Cosplay. All rights reserved.
+                    </p>
+                    <div className="flex justify-center items-center gap-2">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                            class="size-6"
+                        >
+                            <path
+                                fill-rule="evenodd"
+                                d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z"
+                                clip-rule="evenodd"
+                            />
+                        </svg>
+                        I Made Palguna Widiarsana
+                        <span className="mx-3">|</span>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                            class="size-6"
+                        >
+                            <path
+                                fill-rule="evenodd"
+                                d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z"
+                                clip-rule="evenodd"
+                            />
+                        </svg>
+                        Rafi Akmal Widikta
+                        <span className="mx-3">|</span>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                            class="size-6"
+                        >
+                            <path d="M1.5 8.67v8.58a3 3 0 0 0 3 3h15a3 3 0 0 0 3-3V8.67l-8.928 5.493a3 3 0 0 1-3.144 0L1.5 8.67Z" />
+                            <path d="M22.5 6.908V6.75a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3v.158l9.714 5.978a1.5 1.5 0 0 0 1.572 0L22.5 6.908Z" />
+                        </svg>
+                        yamaguchiinterprise@gmail.com
+                    </div>
+
+                    <div class="mt-4 flex justify-center space-x-6">
+                        <a
+                            href="https://facebook.com"
+                            class="text-gray-400 hover:text-white"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="h-6 w-6"
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
+                            >
+                                <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.876v-6.993H7.896v-2.883h2.542V9.797c0-2.513 1.492-3.897 3.776-3.897 1.094 0 2.238.194 2.238.194v2.462h-1.261c-1.244 0-1.63.773-1.63 1.563v1.874h2.773l-.443 2.883h-2.33v6.993C18.343 21.128 22 16.991 22 12z" />
+                            </svg>
+                        </a>
+                        <a
+                            href="https://twitter.com"
+                            class="text-gray-400 hover:text-white"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="h-6 w-6"
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
+                            >
+                                <path d="M8.29 20.251c7.547 0 11.675-6.155 11.675-11.495 0-.175 0-.349-.012-.522A8.348 8.348 0 0 0 22 5.92a8.19 8.19 0 0 1-2.357.642A4.118 4.118 0 0 0 21.447 4.2a8.273 8.273 0 0 1-2.605.98A4.108 4.108 0 0 0 15.448 4c-2.28 0-4.128 1.82-4.128 4.07 0 .319.036.63.106.93A11.65 11.65 0 0 1 3.1 4.89a4.032 4.032 0 0 0-.556 2.045c0 1.412.727 2.656 1.826 3.387a4.09 4.09 0 0 1-1.87-.51v.05c0 1.974 1.428 3.623 3.321 3.994a4.142 4.142 0 0 1-1.857.07c.524 1.626 2.048 2.81 3.847 2.844A8.252 8.252 0 0 1 2 18.136a11.615 11.615 0 0 0 6.29 1.841" />
+                            </svg>
+                        </a>
+                        <a
+                            href="https://instagram.com"
+                            class="text-gray-400 hover:text-white"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="h-6 w-6"
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
+                            >
+                                <path d="M7.75 2A5.75 5.75 0 0 0 2 7.75v8.5A5.75 5.75 0 0 0 7.75 22h8.5A5.75 5.75 0 0 0 22 16.25v-8.5A5.75 5.75 0 0 0 16.25 2h-8.5zM12 7.498a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9zM18.25 5.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5zm-6.25 3a3.25 3.25 0 1 0 0 6.5 3.25 3.25 0 0 0 0-6.5z" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </footer>
         </>
     );
 }
