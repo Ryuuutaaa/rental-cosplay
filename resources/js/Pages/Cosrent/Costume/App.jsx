@@ -39,22 +39,13 @@ export default function App({ datas }) {
                     <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
                         Costumes
                     </h2>
-                    <div className="mb-4">
-                        <input
-                            type="text"
-                            className="border border-gray-300 rounded-lg px-4 py-2 w-full"
-                            placeholder="Search Costume..."
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                        />
-                    </div>
                 </div>
             }
         >
             <Head title="Costum" />
 
             <div className="p-16">
-                <div className="flex justify-between">
+                <div className="flex justify-between mb-3">
                     <a href={route("cosrent.costum.create")}>
                         <button
                             type="button"
@@ -77,6 +68,16 @@ export default function App({ datas }) {
                             Tambah Costume
                         </button>
                     </a>
+
+                    <div>
+                        <input
+                            type="text"
+                            className="border border-gray-300 rounded-lg px-4 py-2 w-full"
+                            placeholder="Search Costume..."
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
+                    </div>
 
                     {/* Ini harusnya di Orders */}
                     {/* <a href="#">
