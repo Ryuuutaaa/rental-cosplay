@@ -73,11 +73,16 @@ export default function FormRent({ datas }) {
                                     <p>Size : {datas.size}</p>
                                     <p>Status : {datas.status}</p>
                                     <p>
-                                        Harga:{" "}
-                                        {datas.price?.toLocaleString("id-ID", {
+                                        Harga :
+                                        {new Intl.NumberFormat("id-ID", {
                                             style: "currency",
                                             currency: "IDR",
-                                        })}{" "}
+                                            minimumFractionDigits: 0,
+                                            maximumFractionDigits: 0,
+                                        })
+                                            .format(datas.price)
+                                            .replace("Rp", "")
+                                            .trim()}
                                         / 3 Hari
                                     </p>
                                 </div>
