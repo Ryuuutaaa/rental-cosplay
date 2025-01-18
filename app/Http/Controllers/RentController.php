@@ -60,14 +60,32 @@ class RentController extends Controller
         $costume = Costum::findOrFail($id);
         $user = auth()->user();
         $tgl_mulai_rental = Carbon::parse($request->tanggal_mulai_rental);
-        $tgl_kembali_kostum = $tgl_mulai_rental->addDays(3)->format('Y-m-d');
+        $tgl_kembali_kostum = $tgl_mulai_rental->copy()->addDays(3)->format('Y-m-d');
+
+        // Validasi untuk mengecek apakah ada bentrok jadwal
+        $conflict = Order::where('costum_id', $costume->id)
+            ->where('status', '!=', OrderStatus::CANCELLED->value) // Abaikan order yang sudah dibatalkan
+            ->where(function ($query) use ($tgl_mulai_rental, $tgl_kembali_kostum) {
+                $query->whereBetween('tanggal_mulai_rental', [$tgl_mulai_rental, $tgl_kembali_kostum])
+                    ->orWhereBetween('tanggal_kembali_kostum', [$tgl_mulai_rental, $tgl_kembali_kostum])
+                    ->orWhere(function ($query) use ($tgl_mulai_rental, $tgl_kembali_kostum) {
+                        $query->where('tanggal_mulai_rental', '<=', $tgl_mulai_rental)
+                            ->where('tanggal_kembali_kostum', '>=', $tgl_kembali_kostum);
+                    });
+            })
+            ->exists();
+
+        if ($conflict) {
+            return redirect()->back()->with('error', 'Kostum tidak tersedia untuk tanggal yang dipilih.');
+        }
 
         $order = Order::create([
             'cosrent_id' => $costume->cosrent_id,
             'costum_id' => $costume->id,
             'user_id' => $user->id,
             'tanggal_mulai_rental' => $request->tanggal_mulai_rental,
-            'tanggal_kembali_kostum' => $tgl_kembali_kostum
+            'tanggal_kembali_kostum' => $tgl_kembali_kostum,
+            'deadline_payment' => now()->addHour(),
         ]);
 
         if ($order) {
@@ -86,8 +104,8 @@ class RentController extends Controller
 
         $order = Order::with('costum')->findOrFail($id);
 
-        if ($order->status !== OrderStatus::PENDING->value) {
-            abort(403, 'Pembayaran sudah dilakukan.');
+        if ($order->status !== OrderStatus::AWAITING_PAYMENT->value) {
+            abort(403, 'Pembayaran sudah dilakukan mohon menunggu konfirmasi dari cosrent.');
         }
 
         return Inertia::render('Rent/PaymentForm', [
@@ -103,10 +121,15 @@ class RentController extends Controller
 
         $order = Order::find($id);
         if ($order) {
+            if ($order->deadline_payment < now()) {
+                return redirect()->route('rent.payment', $id)->with('error', 'Waktu pembayaran telah habis, order dibatalkan.');
+            }
+
             $path = $this->uploadFile($request->file('bukti_pembayaran'), 'uploads/bukti_bayar', auth()->user()->name);
 
             $order->update([
                 'bukti_pembayaran' => $path,
+                'status' => OrderStatus::PENDING->value
             ]);
 
             if (auth()->user()->role->name === 'user') {
@@ -124,36 +147,39 @@ class RentController extends Controller
     {
         $order = Order::with('costum')->findOrFail($id);
 
-        if ($order->status !== OrderStatus::PENDING->value) {
-            return redirect()->route('cosrent.order')->with('error', 'Tidak dapat mengubah status order!');
+        if ($order->status === OrderStatus::PENDING->value) {
+            try {
+                DB::beginTransaction();
+
+                $order->update(['status' => OrderStatus::CONFIRMED->value]);
+
+                $order->costum->update(['status' => CostumeStatus::Rented->value]);
+
+                DB::commit();
+                return redirect()->route('cosrent.order')
+                    ->with('success', 'Order berhasil dikonfirmasi.');
+            } catch (\Exception $e) {
+                DB::rollBack();
+                return redirect()->route('cosrent.order')->with('error', 'Order gagal dikonfirmasi.');
+            }
         }
 
-        try {
-            DB::beginTransaction();
-
-            $order->update(['status' => OrderStatus::CONFIRMED->value]);
-
-            $order->costum->update(['status' => CostumeStatus::Rented->value]);
-
-            DB::commit();
-            return redirect()->route('cosrent.order')
-                ->with('success', 'Order berhasil dikonfirmasi.');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect()->route('cosrent.order')->with('error', 'Order gagal dikonfirmasi.');
-        }
+        return redirect()->route('cosrent.order')->with('error', 'Tidak dapat mengubah status order!');
     }
 
     public function rejectOrder(string $id)
     {
         $order = Order::findOrFail($id);
-        if ($order->status !== OrderStatus::PENDING->value) {
+        if ($order->status === OrderStatus::AWAITING_PAYMENT->value) {
             return redirect()->route('cosrent.order')->with('error', 'Tidak dapat mengubah status order!');
         }
-        $order->update(['status' => OrderStatus::REJECTED->value]);
+        if ($order->status === OrderStatus::PENDING->value) {
+            $order->update(['status' => OrderStatus::REJECTED->value]);
 
-        return redirect()->route('cosrent.order')
-            ->with('success', 'Order berhasil di reject.');
+            return redirect()->route('cosrent.order')
+                ->with('success', 'Order berhasil di reject.');
+        }
+        return redirect()->route('cosrent.order')->with('error', 'Tidak dapat mengubah status order!');
     }
 
     /**
@@ -168,10 +194,4 @@ class RentController extends Controller
     /**
      * Fungsi bantu untuk menghapus file.
      */
-    private function deleteFile($path)
-    {
-        if ($path && Storage::disk('public')->exists($path)) {
-            Storage::disk('public')->delete($path);
-        }
-    }
 }

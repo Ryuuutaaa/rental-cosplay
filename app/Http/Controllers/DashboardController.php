@@ -87,11 +87,6 @@ class DashboardController extends Controller
 
     public function exportCosrentReport(Request $request, $cosrent_id)
     {
-        $pending_orders = Order::where('cosrent_id', '=', $cosrent_id)
-            ->with('costum', 'costum.cosrent', 'costum.category', 'user', 'user.biodata')
-            ->where('status', '=', OrderStatus::PENDING->value)
-            ->get();
-
         $confirmed_orders = Order::where('cosrent_id', '=', $cosrent_id)
             ->with('costum', 'costum.cosrent', 'costum.category', 'user', 'user.biodata')
             ->where('status', '=', OrderStatus::CONFIRMED->value)
@@ -102,12 +97,11 @@ class DashboardController extends Controller
             ->where('status', '=', OrderStatus::DONE->value)
             ->get();
 
-        if ($pending_orders->isEmpty() && $confirmed_orders->isEmpty() && $done_orders->isEmpty()) {
+        if ($confirmed_orders->isEmpty() && $done_orders->isEmpty()) {
             return back()->with('error', 'Belum ada orderan.');
         }
 
-        $cosrentName = $pending_orders->first()?->costum->cosrent->cosrent_name
-            ?? $confirmed_orders->first()?->costum->cosrent->cosrent_name
+        $cosrentName = $confirmed_orders->first()?->costum->cosrent->cosrent_name
             ?? $done_orders->first()?->costum->cosrent->cosrent_name;
 
         $cleanedCosrentName = Str::slug($cosrentName);
@@ -116,7 +110,7 @@ class DashboardController extends Controller
 
         $filename = $cleanedCosrentName . '-' . $timestamp . '.pdf';
 
-        $pdf = Pdf::loadView('exports.cosrent-report', compact('pending_orders', 'confirmed_orders', 'done_orders', 'cosrentName'))
+        $pdf = Pdf::loadView('exports.cosrent-report', compact('confirmed_orders', 'done_orders', 'cosrentName'))
             ->setPaper('A4', 'portrait')
             ->setOptions([
                 'isHtml5ParserEnabled' => true,

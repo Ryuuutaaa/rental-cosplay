@@ -60,6 +60,12 @@
             font-weight: bold;
         }
 
+        .total-pendapatan {
+            font-weight: bold;
+            text-align: right;
+            margin-top: 20px;
+        }
+
         /* Kolom spesifik */
         .no-column {
             width: 5%;
@@ -105,42 +111,6 @@
 <body>
     <h1>Laporan Cosrent: {{ $cosrentName }}</h1>
     <h3>Tanggal: {{ \Carbon\Carbon::now()->format('d M Y, H:i:s') }}</h3>
-
-    <h2>Pending Orders</h2>
-    @if ($pending_orders->isEmpty())
-        <p class="no-data">Tidak ada orderan pending.</p>
-    @else
-        <table>
-            <thead>
-                <tr>
-                    <th class="no-column">No</th>
-                    <th class="kostum-column">Kostum</th>
-                    <th class="kategori-column">Kategori</th>
-                    <th class="penyewa-column">Penyewa</th>
-                    <th class="whatsapp-column">WhatsApp</th>
-                    <th class="tanggal-column">Tanggal Rental</th>
-                    <th class="tanggal-column">Tanggal Kembali</th>
-                    <th class="harga-column">Harga</th>
-                    <th class="status-column">Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($pending_orders as $index => $order)
-                    <tr>
-                        <td>{{ $index + 1 }}</td>
-                        <td>{{ $order->costum->name }}</td>
-                        <td>{{ $order->costum->category->name }}</td>
-                        <td>{{ $order->user->name }}</td>
-                        <td>{{ $order->user->biodata->phone_whatsapp }}</td>
-                        <td>{{ \Carbon\Carbon::parse($order->tanggal_mulai_rental)->format('d-m-Y') }}</td>
-                        <td>{{ \Carbon\Carbon::parse($order->tanggal_kembali_kostum)->format('d-m-Y') }}</td>
-                        <td>{{ number_format($order->costum->price, 0, ',', '.') }}</td>
-                        <td>{{ $order->status }}</td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-    @endif
 
     <h2>Confirmed Orders</h2>
     @if ($confirmed_orders->isEmpty())
@@ -213,6 +183,18 @@
             </tbody>
         </table>
     @endif
+
+    @php
+        $totalPendapatan =
+            $confirmed_orders->sum(function ($order) {
+                return $order->costum->price;
+            }) +
+            $done_orders->sum(function ($order) {
+                return $order->costum->price;
+            });
+    @endphp
+
+    <h3 class="total-pendapatan">Total Pendapatan: {{ number_format($totalPendapatan, 0, ',', '.') }}</h3>
 
 </body>
 

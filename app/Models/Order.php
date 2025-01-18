@@ -20,7 +20,8 @@ class Order extends Model
         "status",
         "tanggal_mulai_rental",
         "tanggal_kembali_kostum",
-        "bukti_pembayaran"
+        "bukti_pembayaran",
+        "deadline_payment"
     ];
 
     protected $guarded = [

@@ -34,7 +34,14 @@ return new class extends Migration
                 ->on('users')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->enum('status', ['pending', 'confirmed', 'rejected', 'done'])->default('pending');
+            $table->enum('status', [
+                'awaiting_payment',
+                'waiting_confirmation',
+                'confirmed',
+                'rejected',
+                'canceled',
+                'done'
+            ])->default('awaiting_payment');
             $table->date('tanggal_mulai_rental')->nullable();
             $table->date('tanggal_kembali_kostum')->nullable();
             $table->string('bukti_pembayaran')->nullable();

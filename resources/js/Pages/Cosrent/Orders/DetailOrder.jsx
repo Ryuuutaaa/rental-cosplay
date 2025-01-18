@@ -26,8 +26,6 @@ export default function DetailOrder({ datas }) {
         setSelectedImage("");
     };
 
-    console.log(datas);
-
     const handleReject = (e, id) => {
         e.preventDefault();
         if (confirm("Are you sure you want to reject this order?")) {
@@ -88,6 +86,12 @@ export default function DetailOrder({ datas }) {
                                             ? "text-yellow-500"
                                             : status === "confirmed"
                                             ? "text-green-500"
+                                            : status === "awaiting_payment"
+                                            ? "text-rose-300"
+                                            : status === "waiting_confirmation"
+                                            ? "text-blue-600"
+                                            : status === "done"
+                                            ? "text-emerald-500"
                                             : "text-red-500"
                                     }
                                 >
@@ -109,9 +113,9 @@ export default function DetailOrder({ datas }) {
                                 onClick={(e) => {
                                     handleReject(e, datas.id);
                                 }}
-                                disabled={status !== "pending"}
+                                disabled={status !== "waiting_confirmation"}
                                 className={
-                                    status !== "pending"
+                                    status !== "waiting_confirmation"
                                         ? "px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 mr-4 cursor-not-allowed"
                                         : "px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 mr-4"
                                 }
@@ -122,9 +126,9 @@ export default function DetailOrder({ datas }) {
                                 onClick={(e) => {
                                     handleConfirm(e, datas.id);
                                 }}
-                                disabled={status !== "pending"}
+                                disabled={status !== "waiting_confirmation"}
                                 className={
-                                    status !== "pending"
+                                    status !== "waiting_confirmation"
                                         ? "px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 cursor-not-allowed"
                                         : "px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
                                 }
