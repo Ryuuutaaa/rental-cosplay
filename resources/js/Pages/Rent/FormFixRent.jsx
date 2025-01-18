@@ -71,19 +71,32 @@ export default function FormRent({ datas }) {
                                         Cosrent: {datas.cosrent?.cosrent_name}
                                     </p>
                                     <p>Size : {datas.size}</p>
-                                    <p>Status : {datas.status}</p>
                                     <p>
-                                        Harga :
-                                        {new Intl.NumberFormat("id-ID", {
-                                            style: "currency",
-                                            currency: "IDR",
-                                            minimumFractionDigits: 0,
-                                            maximumFractionDigits: 0,
-                                        })
-                                            .format(datas.price)
-                                            .replace("Rp", "")
-                                            .trim()}
-                                        / 3 Hari
+                                        Status :{" "}
+                                        {datas.status === "ready" ? (
+                                            <span className="text-green-500">
+                                                {datas.status}
+                                            </span>
+                                        ) : (
+                                            <span className="text-red-500">
+                                                {datas.status}
+                                            </span>
+                                        )}
+                                    </p>
+                                    <p>
+                                        Harga :{" "}
+                                        <span className="font-semibold text-blue-500">
+                                            {new Intl.NumberFormat("id-ID", {
+                                                style: "currency",
+                                                currency: "IDR",
+                                                minimumFractionDigits: 0,
+                                                maximumFractionDigits: 0,
+                                            })
+                                                .format(datas.price)
+                                                .replace("Rp", "")
+                                                .trim()}
+                                            / 3 Hari
+                                        </span>
                                     </p>
                                 </div>
                                 {/* Flash Message */}

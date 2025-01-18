@@ -85,6 +85,7 @@ class RentController extends Controller
             'user_id' => $user->id,
             'tanggal_mulai_rental' => $request->tanggal_mulai_rental,
             'tanggal_kembali_kostum' => $tgl_kembali_kostum,
+            // 'deadline_payment' => now()->addSeconds(10), //debugging makanya per 10 detik aja
             'deadline_payment' => now()->addHour(),
         ]);
 
@@ -105,7 +106,8 @@ class RentController extends Controller
         $order = Order::with('costum')->findOrFail($id);
 
         if ($order->status !== OrderStatus::AWAITING_PAYMENT->value) {
-            abort(403, 'Pembayaran sudah dilakukan mohon menunggu konfirmasi dari cosrent.');
+            return redirect('/');
+            // abort(403, 'Pembayaran sudah dilakukan mohon menunggu konfirmasi dari cosrent.');
         }
 
         return Inertia::render('Rent/PaymentForm', [
@@ -153,7 +155,7 @@ class RentController extends Controller
 
                 $order->update(['status' => OrderStatus::CONFIRMED->value]);
 
-                $order->costum->update(['status' => CostumeStatus::Rented->value]);
+                // $order->costum->update(['status' => CostumeStatus::Rented->value]);
 
                 DB::commit();
                 return redirect()->route('cosrent.order')

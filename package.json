@@ -4,7 +4,9 @@
     "scripts": {
         "build": "vite build",
         "dev": "vite",
-        "serve": "concurrently \"php artisan serve\" \"npm run dev\""
+        "serve": "concurrently \"php artisan serve\" \"npm run dev\"",
+        "all": "concurrently \"php artisan serve\" \"npm run dev\" \"php artisan schedule:work\" --names \"server,vite,scheduler\" --prefix-colors \"blue,green,red\"",
+        "duo": "concurrently \"npm run dev\" \"php artisan schedule:work\" --names \"vite,scheduler\" --prefix-colors \"blue,green\""
     },
     "devDependencies": {
         "@headlessui/react": "^2.0.0",

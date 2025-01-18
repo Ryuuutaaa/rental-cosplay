@@ -74,7 +74,7 @@ export default function History({ datas }) {
                                         ? "bg-gray-500 dark:bg-gray-700"
                                         : data.status === "rejected"
                                         ? "bg-red-400 dark:bg-red-700"
-                                        : data.status === "canceled"
+                                        : data.status === "cancelled"
                                         ? "bg-red-400 dark:bg-red-700"
                                         : "bg-green-400 dark:bg-green-800"
                                 } transition duration-300`}

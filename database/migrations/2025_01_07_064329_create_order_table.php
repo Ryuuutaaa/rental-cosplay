@@ -39,7 +39,7 @@ return new class extends Migration
                 'waiting_confirmation',
                 'confirmed',
                 'rejected',
-                'canceled',
+                'cancelled',
                 'done'
             ])->default('awaiting_payment');
             $table->date('tanggal_mulai_rental')->nullable();
