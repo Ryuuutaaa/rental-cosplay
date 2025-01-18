@@ -47,67 +47,71 @@ export default function Cosrent({ datas = [] }) {
                     <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
                         Cosrent
                     </h2>
-                    <div className="mb-4">
-                        <input
-                            type="text"
-                            className="border border-gray-300 rounded-lg px-4 py-2 w-full"
-                            placeholder="Search Cosrent..."
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                        />
-                    </div>
                 </div>
             }
         >
             <Head title="Cosrent" />
 
             <div className="m-10">
-                {/* Tombol Create */}
-                <NavLink href={route("admin.cosrent.create")}>
-                    <button
-                        type="button"
-                        className="flex text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-                    >
+                <div className="flex items-center justify-between mb-4">
+                    {/* Tombol Create Cosrent */}
+                    <div className="flex items-center space-x-1">
+                        <NavLink href={route("admin.cosrent.create")}>
+                            <button
+                                type="button"
+                                className="flex items-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={1.5}
+                                    stroke="currentColor"
+                                    className="w-5 h-5 mr-2"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M12 4.5v15m7.5-7.5h-15"
+                                    />
+                                </svg>
+                                Create Cosrent
+                            </button>
+                        </NavLink>
+
+                        <NavLink href={route("admin.cosrent.getrequest")}>
+                            <button
+                                type="button"
+                                className="flex items-center text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 dark:bg-purple-600 dark:hover:bg-purple-700 focus:outline-none dark:focus:ring-purple-800"
+                            >
+                                Lihat Request Cosrent
+                            </button>
+                        </NavLink>
+                    </div>
+
+                    {/* Search Input */}
+                    <div className="relative  max-w-xs">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
                             viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                            className="w-5 h-5"
+                            fill="currentColor"
+                            className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
                         >
                             <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M12 4.5v15m7.5-7.5h-15"
+                                fillRule="evenodd"
+                                d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z"
+                                clipRule="evenodd"
                             />
                         </svg>
-                        Create Cosrent
-                    </button>
-                </NavLink>
-                {/* Tombol Lihat Request Cosrent */}
-                <NavLink href={route("admin.cosrent.getrequest")}>
-                    <button
-                        type="button"
-                        className="flex text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 focus:outline-none dark:focus:ring-purple-800"
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                            className="w-5 h-5"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M12 4.5v15m7.5-7.5h-15"
-                            />
-                        </svg>
-                        See Request Cosrent
-                    </button>
-                </NavLink>
+                        <input
+                            type="text"
+                            className="border border-gray-300 rounded-lg pl-10 pr-4 py-2 w-full"
+                            placeholder="Search Cosrent..."
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
+                    </div>
+                </div>
 
                 {/* Flash Message */}
                 {flash.success && (
