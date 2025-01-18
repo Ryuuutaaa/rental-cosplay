@@ -38,44 +38,58 @@ export default function User({ datas }) {
                     <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
                         Users
                     </h2>
-                    <div className="mb-4">
-                        <input
-                            type="text"
-                            className="border border-gray-300 rounded-lg px-4 py-2 w-full"
-                            placeholder="Search Users..."
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                        />
-                    </div>
                 </div>
             }
         >
             <Head title="User" />
 
             <div className="m-10">
-                {/* Tombol Lihat Banned List */}
-                <NavLink href={route("admin.user.bannedlist")}>
-                    <button
-                        type="button"
-                        className="flex text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 focus:outline-none dark:focus:ring-purple-800"
-                    >
+                <div className="flex justify-between">
+                    {/* Tombol Lihat Banned List */}
+                    <NavLink href={route("admin.user.bannedlist")}>
+                        <button
+                            type="button"
+                            className="flex text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 focus:outline-none dark:focus:ring-purple-800"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={1.5}
+                                stroke="currentColor"
+                                className="w-5 h-5"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M12 4.5v15m7.5-7.5h-15"
+                                />
+                            </svg>
+                            See Banned List
+                        </button>
+                    </NavLink>
+                    <div className="mb-4 relative max-w-xs">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
                             viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                            className="w-5 h-5"
+                            fill="currentColor"
+                            className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
                         >
                             <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M12 4.5v15m7.5-7.5h-15"
+                                fillRule="evenodd"
+                                d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z"
+                                clipRule="evenodd"
                             />
                         </svg>
-                        See Banned List
-                    </button>
-                </NavLink>
+                        <input
+                            type="text"
+                            className="border border-gray-300 rounded-lg pl-10 py-2 w-full"
+                            placeholder="Search Users..."
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
+                    </div>
+                </div>
 
                 {/* Flash Message */}
                 {flash.success && (

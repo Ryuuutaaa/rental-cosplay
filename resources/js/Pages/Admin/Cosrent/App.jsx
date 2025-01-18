@@ -90,7 +90,7 @@ export default function Cosrent({ datas = [] }) {
                     </div>
 
                     {/* Search Input */}
-                    <div className="relative  max-w-xs">
+                    <div className="relative max-w-xs">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
