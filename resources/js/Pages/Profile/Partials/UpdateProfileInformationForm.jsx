@@ -1,14 +1,17 @@
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
-import { Transition } from '@headlessui/react';
-import { Link, useForm, usePage } from '@inertiajs/react';
+import InputError from "@/Components/InputError";
+import InputLabel from "@/Components/InputLabel";
+import PrimaryButton from "@/Components/PrimaryButton";
+import TextInput from "@/Components/TextInput";
+import { Transition } from "@headlessui/react";
+import { Link, useForm, usePage, router } from "@inertiajs/react";
+import Cosrent from "@/Pages/Admin/Cosrent/App";
 
 export default function UpdateProfileInformation({
+    userRole,
     mustVerifyEmail,
     status,
-    className = '',
+    className = "",
+    cosrent_account = [],
 }) {
     const user = usePage().props.auth.user;
 
@@ -16,12 +19,27 @@ export default function UpdateProfileInformation({
         useForm({
             name: user.name,
             email: user.email,
+            cosrent_name: cosrent_account.cosrent_name || "",
+            telp_number: cosrent_account.telp_number || "",
+            address: cosrent_account.address || "",
+            cosrent_id: cosrent_account.id,
         });
 
     const submit = (e) => {
         e.preventDefault();
 
-        patch(route('profile.update'));
+        patch(route("profile.update"));
+    };
+
+    const submitCosrent = (e) => {
+        e.preventDefault();
+        router.post(route("profile.cosrent.update"), data, {
+            preserveScroll: true,
+            onSuccess: () => {
+                recentlySuccessful(true);
+            },
+        });
+        patch(route("profile.update"));
     };
 
     return (
@@ -44,7 +62,7 @@ export default function UpdateProfileInformation({
                         id="name"
                         className="mt-1 block w-full"
                         value={data.name}
-                        onChange={(e) => setData('name', e.target.value)}
+                        onChange={(e) => setData("name", e.target.value)}
                         required
                         isFocused
                         autoComplete="name"
@@ -61,7 +79,7 @@ export default function UpdateProfileInformation({
                         type="email"
                         className="mt-1 block w-full"
                         value={data.email}
-                        onChange={(e) => setData('email', e.target.value)}
+                        onChange={(e) => setData("email", e.target.value)}
                         required
                         autoComplete="username"
                     />
@@ -74,7 +92,7 @@ export default function UpdateProfileInformation({
                         <p className="mt-2 text-sm text-gray-800 dark:text-gray-200">
                             Your email address is unverified.
                             <Link
-                                href={route('verification.send')}
+                                href={route("verification.send")}
                                 method="post"
                                 as="button"
                                 className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
@@ -83,7 +101,7 @@ export default function UpdateProfileInformation({
                             </Link>
                         </p>
 
-                        {status === 'verification-link-sent' && (
+                        {status === "verification-link-sent" && (
                             <div className="mt-2 text-sm font-medium text-green-600 dark:text-green-400">
                                 A new verification link has been sent to your
                                 email address.
@@ -92,8 +110,90 @@ export default function UpdateProfileInformation({
                     </div>
                 )}
 
+                {userRole === "cosrent" && (
+                    <div className="space-y-6">
+                        <div>
+                            <InputLabel
+                                htmlFor="cosrent_name"
+                                value="Nama Cosrent"
+                            />
+                            <TextInput
+                                id="cosrent_name"
+                                placeholder="Masukan Nama Cosrent..."
+                                type="text"
+                                className="mt-1 block w-full"
+                                value={data.cosrent_name}
+                                onChange={(e) =>
+                                    setData("cosrent_name", e.target.value)
+                                }
+                                required
+                                autoComplete="off"
+                            />
+                            <InputError
+                                className="mt-2"
+                                message={errors.cosrent_name}
+                            />
+                        </div>
+                        <div>
+                            <InputLabel
+                                htmlFor="telp_number"
+                                value="Nomor Telepon"
+                            />
+                            <TextInput
+                                id="telp_number"
+                                type="number"
+                                placeholder="Masukan Nomor Telepon..."
+                                className="mt-1 block w-full"
+                                value={data.telp_number}
+                                onChange={(e) =>
+                                    setData("telp_number", e.target.value)
+                                }
+                                required
+                                autoComplete="off"
+                            />
+                            <InputError
+                                className="mt-2"
+                                message={errors.telp_number}
+                            />
+                        </div>
+                        <div>
+                            <InputLabel
+                                htmlFor="address"
+                                value="Alamat Lengkap"
+                            />
+                            <TextInput
+                                id="address"
+                                type="text"
+                                placeholder="Masukan Alamat Lengkap Cosrent..."
+                                className="mt-1 block w-full"
+                                value={data.address}
+                                onChange={(e) =>
+                                    setData("address", e.target.value)
+                                }
+                                required
+                                autoComplete="off"
+                            />
+                            <InputError
+                                className="mt-2"
+                                message={errors.address}
+                            />
+                        </div>
+                    </div>
+                )}
+
                 <div className="flex items-center gap-4">
-                    <PrimaryButton disabled={processing}>Save</PrimaryButton>
+                    {userRole === "cosrent" ? (
+                        <PrimaryButton
+                            onClick={submitCosrent}
+                            disabled={processing}
+                        >
+                            Save
+                        </PrimaryButton>
+                    ) : (
+                        <PrimaryButton disabled={processing}>
+                            Save
+                        </PrimaryButton>
+                    )}
 
                     <Transition
                         show={recentlySuccessful}

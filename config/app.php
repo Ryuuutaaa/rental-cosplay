@@ -117,6 +117,8 @@ return [
     | Supported drivers: "file", "cache"
     |
     */
+    'PDF' => Barryvdh\DomPDF\Facade\Pdf::class,
+
 
     'maintenance' => [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),

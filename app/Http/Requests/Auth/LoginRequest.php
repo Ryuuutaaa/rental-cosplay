@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Enums\UserStatus;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -49,6 +50,16 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        //kalo berhasil login di cek lagi status akun nya
+        $user = Auth::user();
+        if ($user->status !== UserStatus::Active) {
+            Auth::logout();
+
+            throw ValidationException::withMessages([
+                'email' => 'Damn, bummer! Your account got banned. Maybe you`re just too cool for this platform.',
+            ]);
+        }
+
         RateLimiter::clear($this->throttleKey());
     }
 
@@ -80,6 +91,6 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
+        return Str::transliterate(Str::lower($this->string('email')) . '|' . $this->ip());
     }
 }
